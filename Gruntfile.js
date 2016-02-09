@@ -35,6 +35,58 @@ module.exports = function(grunt) {
             dockerclient : grunt.sensitiveConfig.docker.client,
 
             images : {
+              hadoop : {
+                dockerfile : "./images/hadoop",
+                tag : "2.6.0",
+                repo : "hadoop",
+                options : {
+                  build : {
+                    t : grunt.sensitiveConfig.docker.registry.serveraddress
+                        + "/hadoop:" + "2.6.0",
+                    pull : false,
+                    nocache : false
+                  },
+                  run : {
+                    create : {
+                      Hostname : "hadoop",
+                      ExposedPorts : {
+                        "50010/tcp" : {},
+                        "50020/tcp" : {},
+                        "50070/tcp" : {},
+                        "50075/tcp" : {},
+                        "50090/tcp" : {},
+                        "8020/tcp" : {},
+                        "9000/tcp" : {},
+                        "19888/tcp" : {},
+                        "8030/tcp" : {},
+                        "8031/tcp" : {},
+                        "8032/tcp" : {},
+                        "8033/tcp" : {},
+                        "8040/tcp" : {},
+                        "8042/tcp" : {},
+                        "8088/tcp" : {},
+                        "49707/tcp" : {},
+                        "2122/tcp" : {},
+                        "22/tcp" : {}
+                      },
+                      // TODO: I suppose all them have to be exposed
+                      HostConfig : {
+                        PortBindings : {
+                          "8088/tcp" : [ {
+                            HostPort : ""
+                          } ],
+                          "8042/tcp" : [ {
+                            HostPort : "8042"
+                          } ]
+
+                        }
+                      }
+                    },
+                    start : {},
+                    cmd : []
+                  },
+                }
+              },
               spark : {
                 dockerfile : "./images/spark",
                 tag : "1.5.1",
@@ -70,59 +122,7 @@ module.exports = function(grunt) {
                   },
                 }
               }
-            },
-
-            test : [
-                {
-                  auth : grunt.sensitiveConfig.test.auth,
-                  protocol : "http",
-                  port : 80,
-                  path : "/wfs",
-                  query : {
-                    request : "GetCapabilities",
-                    version : "1.1.0",
-                    service : "wfs"
-                  },
-                  shouldStartWith : "<ows:"
-                },
-                {
-                  auth : grunt.sensitiveConfig.test.auth,
-                  protocol : "http",
-                  port : 80,
-                  path : "/wfs",
-                  query : {
-                    request : "GetFeature",
-                    version : "1.1.0",
-                    service : "wfs",
-                    typename : "aurin:evi_AusByEVI2011_DataProfile",
-                    maxfeatures : "2"
-                  },
-                  shouldStartWith : "<?xml version=\"1.0\" encoding=\"UTF-8\"?><wfs:FeatureCollection"
-                },
-                {
-                  auth : grunt.sensitiveConfig.test.auth,
-                  protocol : "http",
-                  port : 80,
-                  path : "/wps",
-                  query : {
-                    request : "GetCapabilities",
-                    version : "1.0.0",
-                    service : "wps"
-                  },
-                  shouldStartWith : "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                },
-                {
-                  auth : grunt.sensitiveConfig.test.auth,
-                  protocol : "http",
-                  port : 80,
-                  path : "/csw",
-                  query : {
-                    request : "GetCapabilities",
-                    version : "2.0.2",
-                    service : "csw"
-                  },
-                  shouldStartWith : "<?xml version=\"1.0\" encoding=\"UTF-8\"?><csw:Capabilities xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:gmd=\"http://www.isotc211.org/2005/gmd\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ows=\"http://www.opengis.net/ows\" xmlns:csw=\"http://www.opengis.net/cat/csw/2.0.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"2.0.2\" xsi:schemaLocation=\"http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd\"><ows:ServiceIdentification><ows:ServiceType>CSW"
-                } ]
+            }
           }
         },
 
@@ -152,6 +152,7 @@ module.exports = function(grunt) {
                 remoteIpPrefix : grunt.customConfig.devIPs
               } ]
             },
+
             webconsole : {
               description : "Opens the Hadoop, Spark, Accumulo web console ports to dev machines",
               rules : [ {
@@ -177,6 +178,7 @@ module.exports = function(grunt) {
                 remoteIpPrefix : grunt.customConfig.devIPs
               } ]
             },
+
             slave : {
               description : "Opens the Hadoop, Spark, Accumulo slave ports to the master, all other slaves, and dev machines",
               rules : [ {
@@ -228,24 +230,24 @@ module.exports = function(grunt) {
                 remoteIpPrefix : grunt.customConfig.devIPs,
                 remoteIpNodePrefixes : [ "master", "slave" ]
               } ]
-            },
+            }
+          },
 
-            nodetypes : [ {
-              name : "slave",
-              replication : 4,
-              imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
-              flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
-              securitygroups : [ "default", "slave" ],
-              images : [ "spark" ]
-            }, {
-              name : "master",
-              replication : 1,
-              imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
-              flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
-              securitygroups : [ "default", "webconsole" ],
-              images : [ "spark" ]
-            } ]
-          }
+          nodetypes : [ {
+            name : "slave",
+            replication : 4,
+            imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
+            flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
+            securitygroups : [ "default", "slave" ],
+            images : [ "spark" ]
+          }, {
+            name : "master",
+            replication : 1,
+            imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
+            flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
+            securitygroups : [ "default", "webconsole" ],
+            images : [ "spark" ]
+          } ]
         }
       });
 
@@ -254,9 +256,41 @@ module.exports = function(grunt) {
     config : "./package.json"
   });
 
+  // Setups and builds the Docker images
+  grunt.registerTask("build", [ "dock:build" ]);
+
+  // Pushes the Docker images to registry
+  grunt.registerTask("push", [ "dock:push" ]);
+
   // Utility tasks to deploy and undeploy the cluster in one go
   grunt.registerTask("deploy", [ "clouddity:createsecuritygroups", "wait",
       "clouddity:createnodes", "wait", "clouddity:updatesecuritygroups" ]);
   grunt.registerTask("undeploy", [ "clouddity:destroynodes", "wait",
       "clouddity:destroysecuritygroups" ]);
+
+  // Pulls the Docker images from registry
+  grunt.registerTask("pull", [ "clouddity:pull" ]);
+
+  // Generate configuration and copies to the hosts
+  grunt.registerTask("generate", [ "clean", "mkdir", "ejs",
+      "clouddity:copytohost" ]);
+
+  // Listing cluster components tasks
+  grunt.registerTask("listsecuritygroups", [ "clouddity:listsecuritygroups" ]);
+  grunt.registerTask("listnodes", [ "clouddity:listnodes" ]);
+  grunt.registerTask("listcontainers", [ "clouddity:listcontainers" ]);
+
+  // Docker containers creation
+  grunt.registerTask("run", [ "clouddity:run" ]);
+
+  // Docker containers management
+  grunt.registerTask("stop", [ "clouddity:stop" ]);
+  grunt.registerTask("start", [ "clouddity:start" ]);
+
+  // Docker containers removal
+  grunt
+      .registerTask("remove", [ "clouddity:stop", "wait", "clouddity:remove" ]);
+
+  // Tests the deployed containers
+  grunt.registerTask("test", [ "clouddity:test" ]);
 };
