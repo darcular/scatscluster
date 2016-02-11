@@ -1,18 +1,20 @@
 #!/bin/bash
 
-#: ${HADOOP_PREFIX:=/usr/local/hadoop}
+#
+# Script to start HDFS and YARN
+#
 
 ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
 
 rm /tmp/*.pid
 
-# installing libraries if any - (resource urls added comma separated to the ACP system variable)
+# Installs  libraries if any - (resource urls added comma separated to the ACP system variable)
 cd ${HADOOP_PREFIX}/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
 
-# altering the core-site configuration
+# Alters the core-site configuration
 sed s/HOSTNAME/${HOSTNAME}/ ${HADOOP_PREFIX}/etc/hadoop/core-site.xml.template > ${HADOOP_PREFIX}/etc/hadoop/core-site.xml
 
-
+# Starts DFS, YARN
 service sshd start
 start-dfs.sh
 start-yarn.sh

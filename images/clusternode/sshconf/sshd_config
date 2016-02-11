@@ -1,0 +1,14 @@
+Port 22
+HostKey /etc/ssh/ssh_host_rsa_key
+UsePrivilegeSeparation yes
+KeyRegenerationInterval 3600
+ServerKeyBits 1024
+SyslogFacility AUTH
+LogLevel INFO
+LoginGraceTime 120
+PermitRootLogin yes
+RSAAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile /etc/ssh/authorized_keys
+PasswordAuthentication no
+TCPKeepAlive yes

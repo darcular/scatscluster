@@ -22,9 +22,9 @@
 # remote nodes.
 
 # The java implementation to use.
-export JAVA_HOME=/usr/java/default
-export     HADOOP_PREFIX=/usr/local/hadoop
-export HADOOP_HOME=/usr/local/hadoop
+#export JAVA_HOME=/usr/java/default
+#export     HADOOP_PREFIX=/usr/local/hadoop
+#export HADOOP_PREFIX=/usr/local/hadoop
 
 
 # The jsvc implementation to use. Jsvc is required to run secure datanodes
@@ -33,14 +33,14 @@ export HADOOP_HOME=/usr/local/hadoop
 # data transfer protocol using non-privileged ports.
 #export JSVC_HOME=${JSVC_HOME}
 
-export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/
+export HADOOP_CONF_DIR=${HADOOP_PREFIX}/etc/hadoop/
 
 # Extra Java CLASSPATH elements.  Automatically insert capacity-scheduler.
-for f in $HADOOP_HOME/contrib/capacity-scheduler/*.jar; do
-  if [ "$HADOOP_CLASSPATH" ]; then
-    export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$f
+for f in ${HADOOP_PREFIX}/contrib/capacity-scheduler/*.jar; do
+  if [ "${HADOOP_CLASSPATH}" ]; then
+    export HADOOP_CLASSPATH=${HADOOP_CLASSPATH}:${f}
   else
-    export HADOOP_CLASSPATH=$f
+    export HADOOP_CLASSPATH=${f}
   fi
 done
 
@@ -49,19 +49,19 @@ done
 #export HADOOP_NAMENODE_INIT_HEAPSIZE=""
 
 # Extra Java runtime options.  Empty by default.
-export HADOOP_OPTS="$HADOOP_OPTS -Djava.net.preferIPv4Stack=true"
+export HADOOP_OPTS="${HADOOP_OPTS} -Djava.net.preferIPv4Stack=true"
 
 # Command specific options appended to HADOOP_OPTS when specified
-export HADOOP_NAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_NAMENODE_OPTS"
-export HADOOP_DATANODE_OPTS="-Dhadoop.security.logger=ERROR,RFAS $HADOOP_DATANODE_OPTS"
+export HADOOP_NAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} ${HADOOP_NAMENODE_OPTS}"
+export HADOOP_DATANODE_OPTS="-Dhadoop.security.logger=ERROR,RFAS ${HADOOP_DATANODE_OPTS}"
 
-export HADOOP_SECONDARYNAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_SECONDARYNAMENODE_OPTS"
+export HADOOP_SECONDARYNAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} ${HADOOP_SECONDARYNAMENODE_OPTS}"
 
-export HADOOP_NFS3_OPTS="$HADOOP_NFS3_OPTS"
-export HADOOP_PORTMAP_OPTS="-Xmx512m $HADOOP_PORTMAP_OPTS"
+export HADOOP_NFS3_OPTS="${HADOOP_NFS3_OPTS}"
+export HADOOP_PORTMAP_OPTS="-Xmx512m ${HADOOP_PORTMAP_OPTS}"
 
 # The following applies to multiple commands (fs, dfs, fsck, distcp etc)
-export HADOOP_CLIENT_OPTS="-Xmx512m $HADOOP_CLIENT_OPTS"
+export HADOOP_CLIENT_OPTS="-Xmx512m ${HADOOP_CLIENT_OPTS}"
 #HADOOP_JAVA_PLATFORM_OPTS="-XX:-UsePerfData $HADOOP_JAVA_PLATFORM_OPTS"
 
 # On secure datanodes, user to run the datanode as after dropping privileges.
@@ -71,7 +71,7 @@ export HADOOP_CLIENT_OPTS="-Xmx512m $HADOOP_CLIENT_OPTS"
 # using non-privileged ports.
 export HADOOP_SECURE_DN_USER=${HADOOP_SECURE_DN_USER}
 
-# Where log files are stored.  $HADOOP_HOME/logs by default.
+# Where log files are stored.  $HADOOP_PREFIX/logs by default.
 #export HADOOP_LOG_DIR=${HADOOP_LOG_DIR}/$USER
 
 # Where log files are stored in the secure data environment.

@@ -35,6 +35,39 @@ module.exports = function(grunt) {
             dockerclient : grunt.sensitiveConfig.docker.client,
 
             images : {
+              clusternode : {
+                dockerfile : "./images/clusternode",
+                tag : "0.1.0",
+                repo : "clusternode",
+                options : {
+                  build : {
+                    t : grunt.sensitiveConfig.docker.registry.serveraddress
+                        + "/clusternode:" + "0.1.0",
+                    pull : false,
+                    nocache : false
+                  },
+                  run : {
+                    create : {
+                      Hostname : "clusternode",
+                      ExposedPorts : {
+                        "22/tcp" : {}
+                      },
+                      HostConfig : {
+                        /*
+                        Binds : [
+                            "/home/lmorandini/git/scatscluster/hostvolume/sshconf/:/etc/ssh",
+                            "/home/lmorandini/git/scatscluster/hostvolume/dotssh/:/root/.ssh" ]
+                      
+                       * , PortBindings : { "22/tcp" : [ { HostPort : "22" } ] }
+                       */
+                      },
+                      start : {},
+                      cmd : []
+                    }
+                  }
+                }
+              }
+        /*,
               hadoop : {
                 dockerfile : "./images/hadoop",
                 tag : "2.6.0",
@@ -122,6 +155,7 @@ module.exports = function(grunt) {
                   },
                 }
               }
+            */
             }
           }
         },
