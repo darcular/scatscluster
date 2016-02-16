@@ -1,0 +1,8 @@
+SPARK_LOCAL_IP=127.0.0.1
+SPARK_PUBLIC_DNS=`grep dockerhost /etc/hosts | cut -f 1`
+SPARK_MASTER_PORT=7077
+SPARK_MASTER_WEBUI_PORT=8080
+
+
+
+

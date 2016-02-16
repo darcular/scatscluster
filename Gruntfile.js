@@ -53,65 +53,55 @@ module.exports = function(grunt) {
                         "22/tcp" : {}
                       },
                       HostConfig : {
-                        /*
-                        Binds : [
-                            "/home/lmorandini/git/scatscluster/hostvolume/sshconf/:/etc/ssh",
-                            "/home/lmorandini/git/scatscluster/hostvolume/dotssh/:/root/.ssh" ]
-                      
-                       * , PortBindings : { "22/tcp" : [ { HostPort : "22" } ] }
-                       */
+                        Binds : [],
+                        PortBindings : {
+                          "22/tcp" : [ {
+                            HostPort : "2022"
+                          } ]
+                        }
                       },
                       start : {},
                       cmd : []
                     }
                   }
                 }
-              }
-        /*,
-              hadoop : {
-                dockerfile : "./images/hadoop",
-                tag : "2.6.0",
-                repo : "hadoop",
+              },
+              sparkmaster : {
+                dockerfile : "./images/sparkmaster",
+                tag : "1.6.0",
+                repo : "sparkmaster",
                 options : {
                   build : {
                     t : grunt.sensitiveConfig.docker.registry.serveraddress
-                        + "/hadoop:" + "2.6.0",
+                        + "/sparkmaster:" + "1.6.0",
                     pull : false,
                     nocache : false
                   },
                   run : {
                     create : {
-                      Hostname : "hadoop",
+                      Hostname : "sparkmaster",
                       ExposedPorts : {
-                        "50010/tcp" : {},
-                        "50020/tcp" : {},
-                        "50070/tcp" : {},
-                        "50075/tcp" : {},
-                        "50090/tcp" : {},
-                        "8020/tcp" : {},
-                        "9000/tcp" : {},
-                        "19888/tcp" : {},
-                        "8030/tcp" : {},
-                        "8031/tcp" : {},
-                        "8032/tcp" : {},
-                        "8033/tcp" : {},
-                        "8040/tcp" : {},
-                        "8042/tcp" : {},
-                        "8088/tcp" : {},
-                        "49707/tcp" : {},
-                        "2122/tcp" : {},
-                        "22/tcp" : {}
+                        "22/tcp" : {},
+                        "4040/tcp" : {},
+                        "7077/tcp" : {},
+                        "8080/tcp" : {},
+                        "18080/tcp" : {}
                       },
-                      // TODO: I suppose all them have to be exposed
                       HostConfig : {
+                        PublishAllPorts: true,
                         PortBindings : {
-                          "8088/tcp" : [ {
-                            HostPort : ""
+                          "4040/tcp" : [ {
+                            HostPort : "4040"
                           } ],
-                          "8042/tcp" : [ {
-                            HostPort : "8042"
+                          "7077/tcp" : [ {
+                            HostPort : "7077"
+                          } ],
+                          "8080/tcp" : [ {
+                            HostPort : "8080"
+                          } ],
+                          "18080/tcp" : [ {
+                            HostPort : "18080"
                           } ]
-
                         }
                       }
                     },
@@ -120,33 +110,38 @@ module.exports = function(grunt) {
                   },
                 }
               },
-              spark : {
-                dockerfile : "./images/spark",
-                tag : "1.5.1",
-                repo : "spark",
+              sparkslave : {
+                dockerfile : "./images/sparkslave",
+                tag : "1.6.0",
+                repo : "sparkslave",
                 options : {
                   build : {
                     t : grunt.sensitiveConfig.docker.registry.serveraddress
-                        + "/spark:" + "1.5.1",
+                        + "/sparkslave:" + "1.6.0",
                     pull : false,
                     nocache : false
                   },
                   run : {
                     create : {
-                      Hostname : "spark",
+                      Hostname : "sparkslave",
                       ExposedPorts : {
-                        "8088/tcp" : {},
-                        "8042/tcp" : {}
+                        "22/tcp" : {},
+                        "4040/tcp" : {},
+                        "7078/tcp" : {},
+                        "8081/tcp" : {}
                       },
                       HostConfig : {
+                        PublishAllPorts: true,
                         PortBindings : {
-                          "8088/tcp" : [ {
-                            HostPort : "8088"
+                          "4040/tcp" : [ {
+                            HostPort : "4040"
                           } ],
-                          "8042/tcp" : [ {
-                            HostPort : "8042"
+                          "7078/tcp" : [ {
+                            HostPort : "7078"
+                          } ],
+                          "8081/tcp" : [ {
+                            HostPort : "8081"
                           } ]
-
                         }
                       }
                     },
@@ -155,7 +150,6 @@ module.exports = function(grunt) {
                   },
                 }
               }
-            */
             }
           }
         },
@@ -187,100 +181,85 @@ module.exports = function(grunt) {
               } ]
             },
 
-            webconsole : {
-              description : "Opens the Hadoop, Spark, Accumulo web console ports to dev machines",
+            masterwebconsole : {
+              description : "Opens the master web console ports to dev machines",
               rules : [ {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 4040,
+                portRangeMax : 4040,
+                remoteIpPrefix : grunt.customConfig.devIPs
+              }, {
                 direction : "ingress",
                 ethertype : "IPv4",
                 protocol : "tcp",
                 portRangeMin : 8080,
                 portRangeMax : 8080,
                 remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 8020,
-                portRangeMax : 8020,
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 50095,
-                portRangeMax : 50095,
-                remoteIpPrefix : grunt.customConfig.devIPs
               } ]
             },
 
-            slave : {
-              description : "Opens the Hadoop, Spark, Accumulo slave ports to the master, all other slaves, and dev machines",
+            slavewebconsole : {
+              description : "Opens the slave web console ports to dev machines",
               rules : [ {
                 direction : "ingress",
                 ethertype : "IPv4",
                 protocol : "tcp",
-                portRangeMin : 2181,
-                portRangeMax : 2181,
-                remoteIpPrefix : grunt.customConfig.devIPs,
-                remoteIpNodePrefixes : [ "master", "slave" ]
+                portRangeMin : 4040,
+                portRangeMax : 4040,
+                remoteIpPrefix : grunt.customConfig.devIPs
               }, {
                 direction : "ingress",
                 ethertype : "IPv4",
                 protocol : "tcp",
-                portRangeMin : 2888,
-                portRangeMax : 2888,
-                remoteIpPrefix : grunt.customConfig.devIPs,
-                remoteIpNodePrefixes : [ "master", "slave" ]
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 3888,
-                portRangeMax : 3888,
-                remoteIpPrefix : grunt.customConfig.devIPs,
-                remoteIpNodePrefixes : [ "master", "slave" ]
-              }, {
+                portRangeMin : 8081,
+                portRangeMax : 8081,
+                remoteIpPrefix : grunt.customConfig.devIPs
+              } ]
+            },
+
+            sparkmaster : {
+              description : "Opens the Spark ports to dev machines and the cluster",
+              rules : [ {
                 direction : "ingress",
                 ethertype : "IPv4",
                 protocol : "tcp",
                 portRangeMin : 7077,
                 portRangeMax : 7077,
-                remoteIpPrefix : grunt.customConfig.devIPs,
-                remoteIpNodePrefixes : [ "master", "slave" ]
-              }, {
+                remoteIpNodePrefixes : [ "slave" ],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              } ]
+            },
+
+            sparkslave : {
+              description : "Opens the Spark to the master and dev machines",
+              rules : [ {
                 direction : "ingress",
                 ethertype : "IPv4",
                 protocol : "tcp",
-                portRangeMin : 9997,
-                portRangeMax : 9997,
-                remoteIpPrefix : grunt.customConfig.devIPs,
-                remoteIpNodePrefixes : [ "master", "slave" ]
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 50010,
-                portRangeMax : 50010,
-                remoteIpPrefix : grunt.customConfig.devIPs,
-                remoteIpNodePrefixes : [ "master", "slave" ]
+                portRangeMin : 7078,
+                portRangeMax : 7078,
+                remoteIpNodePrefixes : [ "master" ],
+                remoteIpPrefix : grunt.customConfig.devIPs
               } ]
             }
           },
 
           nodetypes : [ {
-            name : "slave",
-            replication : 4,
-            imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
-            flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
-            securitygroups : [ "default", "slave" ],
-            images : [ "spark" ]
-          }, {
             name : "master",
             replication : 1,
             imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
             flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
-            securitygroups : [ "default", "webconsole" ],
-            images : [ "spark" ]
+            securitygroups : [ "default", "masterwebconsole", "sparkmaster" ],
+            images : [ "sparkmaster" ]
+          } , {
+            name : "slave",
+            replication : 3,
+            imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
+            flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
+            securitygroups : [ "default", "slavewebconsole", "sparkslave" ],
+            images : [ "sparkslave" ]
           } ]
         }
       });

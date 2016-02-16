@@ -26,7 +26,7 @@ COPY dotssh/* /root/.ssh/
 RUN chmod -R 600 /etc/ssh
 RUN chmod -R 600 /root/.ssh
 
-ENTRYPOINT service ssh start && bash
+ENTRYPOINT service ssh start && tail -f /dev/null
 
 EXPOSE 22
 
