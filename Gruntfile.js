@@ -83,12 +83,16 @@ module.exports = function(grunt) {
                       ExposedPorts : {
                         "22/tcp" : {},
                         "4040/tcp" : {},
-                        "7077/tcp" : {},
+                        "7078/tcp" : {},
                         "8080/tcp" : {},
-                        "18080/tcp" : {}
+                        "18080/tcp" : {},
+                        "7079/tcp" : {},
+                        "7080/tcp" : {},
+                        "7081/tcp" : {},
+                        "7082/tcp" : {},
+                        "7083/tcp" : {}
                       },
                       HostConfig : {
-                        PublishAllPorts: true,
                         PortBindings : {
                           "4040/tcp" : [ {
                             HostPort : "4040"
@@ -101,7 +105,22 @@ module.exports = function(grunt) {
                           } ],
                           "18080/tcp" : [ {
                             HostPort : "18080"
-                          } ]
+                          } ],
+                          "7079/tcp" : [ {
+                            HostPort : "7079"
+                          } ],
+                          "7080/tcp" : [ {
+                            HostPort : "7080"
+                          } ],
+                          "7081/tcp" : [ {
+                            HostPort : "7081"
+                          } ],
+                          "7082/tcp" : [ {
+                            HostPort : "7082"
+                          } ],
+                          "7083/tcp" : [ {
+                            HostPort : "7083"
+                          } ],
                         }
                       }
                     },
@@ -128,10 +147,14 @@ module.exports = function(grunt) {
                         "22/tcp" : {},
                         "4040/tcp" : {},
                         "7078/tcp" : {},
-                        "8081/tcp" : {}
+                        "8081/tcp" : {},
+                        "7079/tcp" : {},
+                        "7080/tcp" : {},
+                        "7081/tcp" : {},
+                        "7082/tcp" : {},
+                        "7083/tcp" : {}
                       },
                       HostConfig : {
-                        PublishAllPorts: true,
                         PortBindings : {
                           "4040/tcp" : [ {
                             HostPort : "4040"
@@ -141,6 +164,21 @@ module.exports = function(grunt) {
                           } ],
                           "8081/tcp" : [ {
                             HostPort : "8081"
+                          } ],
+                          "7079/tcp" : [ {
+                            HostPort : "7079"
+                          } ],
+                          "7080/tcp" : [ {
+                            HostPort : "7080"
+                          } ],
+                          "7081/tcp" : [ {
+                            HostPort : "7081"
+                          } ],
+                          "7082/tcp" : [ {
+                            HostPort : "7082"
+                          } ],
+                          "7083/tcp" : [ {
+                            HostPort : "7083"
                           } ]
                         }
                       }
@@ -226,7 +264,7 @@ module.exports = function(grunt) {
                 ethertype : "IPv4",
                 protocol : "tcp",
                 portRangeMin : 7077,
-                portRangeMax : 7077,
+                portRangeMax : 7083,
                 remoteIpNodePrefixes : [ "slave" ],
                 remoteIpPrefix : grunt.customConfig.devIPs
               } ]
@@ -239,7 +277,7 @@ module.exports = function(grunt) {
                 ethertype : "IPv4",
                 protocol : "tcp",
                 portRangeMin : 7078,
-                portRangeMax : 7078,
+                portRangeMax : 7083,
                 remoteIpNodePrefixes : [ "master" ],
                 remoteIpPrefix : grunt.customConfig.devIPs
               } ]
@@ -253,7 +291,7 @@ module.exports = function(grunt) {
             flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
             securitygroups : [ "default", "masterwebconsole", "sparkmaster" ],
             images : [ "sparkmaster" ]
-          } , {
+          }, {
             name : "slave",
             replication : 3,
             imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
