@@ -20,7 +20,8 @@ source setip.sh
 R
 ```
 
-* In R, executes:
+* In R, execute:
+```
 library("SparkR", lib.loc=file.path(Sys.getenv("SPARK_HOME"), "R/lib")); 
 sc <- sparkR.init(master=paste("spark://", Sys.getenv("SPARK_MASTER_IP"), ":7077", sep=""), appName="TestRApp");
 sqlContext <- sparkRSQL.init(sc);
