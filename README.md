@@ -14,14 +14,13 @@ Grunt tasks to define and deploy the cluster used for SCATS traffic data analysi
 * Install Spark 1.6.x, set SPARK_HOME environment variable 
 * Install R 3.1.x
 * Deploy the cluster on NeCTAR
-* Set the Spark Master node IP address in the SPARK_MASTER_IP environment variable
-* Set thefollowing environment variables:
-export SPARK_DRIVER_PORT=7079
-export SPARK_HOME=/usr/local/spark
-export SPARK_LOCAL_IP=127.0.0.1
-export  SPARK_MASTER_IP=115.146.95.194
+* Sets the environment and call the R shell
+```
+source setip.sh
+R
+```
 
-* Start R, and executes:
+* In R, executes:
 library("SparkR", lib.loc=file.path(Sys.getenv("SPARK_HOME"), "R/lib")); 
 sc <- sparkR.init(master=paste("spark://", Sys.getenv("SPARK_MASTER_IP"), ":7077", sep=""), appName="TestRApp");
 sqlContext <- sparkRSQL.init(sc);
@@ -41,8 +40,56 @@ for (wordcount in output) {
 }
 
 ```
+
+```
+spark-shell --deploy-mode client --master spark://115.146.93.115:7077 
+```
+
+```
+import org.apache.spark.SparkContext._
+import org.apache.spark.graphx.{GraphXUtils, PartitionStrategy}
+import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.graphx.util.GraphGenerators
+import java.io.{PrintWriter, FileOutputStream}
+
+var app = "pagerank"
+var niter = 10
+var numVertices = 1000
+var numEPart: Option[Int] = None
+var partitionStrategy: Option[PartitionStrategy] = None
+var mu: Double = 4.0
+var sigma: Double = 1.3
+var degFile: String = ""
+var seed: Int = -1
+
+println(s"Creating graph...")
+val unpartitionedGraph = GraphGenerators.logNormalGraph(sc, numVertices, numEPart.getOrElse(sc.defaultParallelism), mu, sigma, seed)
+
+// Repartition the graph
+val graph = partitionStrategy.foldLeft(unpartitionedGraph)(_.partitionBy(_)).cache()
+var startTime = System.currentTimeMillis()
+val numEdges = graph.edges.count()
+println(s"Done creating graph. Num Vertices = $numVertices, Num Edges = $numEdges")
+
+val loadTime = System.currentTimeMillis() - startTime
+startTime = System.currentTimeMillis()
+
+println("Running PageRank")
+val totalPR = graph.staticPageRank(niter).vertices.map(_._2).sum()
+println(s"Total PageRank = $totalPR")
+
+val runTime = System.currentTimeMillis() - startTime
+
+println(s"Num Vertices = $numVertices")
+println(s"Num Edges = $numEdges")
+println(s"Creation time = ${loadTime/1000.0} seconds")
+println(s"Run time = ${runTime/1000.0} seconds")
+```
+
+```
+export SPARK_LOCAL_IP=${SPARK_MASTER_IP}
 /opt/spark-1.6.0-bin-hadoop2.6/bin/spark-submit \
-  --master spark://115.146.93.91:6066 \
+  --master spark://115.146.93.115:6066 \
   --class org.apache.spark.examples.SparkPi \
   --deploy-mode=cluster \
   --verbose \

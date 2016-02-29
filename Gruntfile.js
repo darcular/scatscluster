@@ -95,6 +95,7 @@ module.exports = function(grunt) {
                         "7084/tcp" : {}
                       },
                       HostConfig : {
+                        NetworkMode : "host",
                         PortBindings : {
                           "4040/tcp" : [ {
                             HostPort : "4040"
@@ -150,7 +151,7 @@ module.exports = function(grunt) {
                   },
                   run : {
                     create : {
-                      HostAliases : ["scats-1-master:sparkmaster"],
+                      "clouddity:HostAliases" : [ "scats-1-master:sparkmaster" ],
                       Hostname : "sparkslave",
                       ExposedPorts : {
                         "22/tcp" : {},
@@ -166,6 +167,7 @@ module.exports = function(grunt) {
                         "7084/tcp" : {}
                       },
                       HostConfig : {
+                        NetworkMode : "host",
                         PortBindings : {
                           "4040/tcp" : [ {
                             HostPort : "4040"
@@ -329,15 +331,28 @@ module.exports = function(grunt) {
             imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
             flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
             securitygroups : [ "default", "masterwebconsole", "sparkmaster" ],
-            images : [ "sparkmaster" ]
+            images : [ "sparkmaster" ],
+            test : [ {
+              name : "Master WebUI",
+              protocol : "http",
+              port : 8080,
+              path : "/",
+              shouldContain : "Spark Master at spark:"
+            } ]
           }, {
             name : "slave",
-// XXX           replication : 3,
-            replication : 1,
+            replication : 3,
             imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
             flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
             securitygroups : [ "default", "slavewebconsole", "sparkslave" ],
-            images : [ "sparkslave" ]
+            images : [ "sparkslave" ],
+            test : [ {
+              name : "Slave WebUI",
+              protocol : "http",
+              port : 8081,
+              path : "/",
+              shouldContain : "Spark Worker at"
+            } ]
           } ]
         }
       });
@@ -353,10 +368,11 @@ module.exports = function(grunt) {
   // Pushes the Docker images to registry
   grunt.registerTask("push", [ "dock:push" ]);
 
-  // Utility tasks to deploy and undeploy the cluster in one go
-  grunt.registerTask("deploy", [ "clouddity:createsecuritygroups", "wait",
-      "clouddity:createnodes", "wait", "clouddity:updatesecuritygroups" ]);
-  grunt.registerTask("undeploy", [ "clouddity:destroynodes", "wait",
+  // Utility tasks to create and drop the cluster in one go
+  grunt.registerTask("launch", [ "clouddity:createsecuritygroups", "wait",
+      "clouddity:createnodes", "wait", "clouddity:updatesecuritygroups",
+      "wait", "clouddity:addhosts" ]);
+  grunt.registerTask("destroy", [ "clouddity:destroynodes", "wait",
       "clouddity:destroysecuritygroups" ]);
 
   // Pulls the Docker images from registry

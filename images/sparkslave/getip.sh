@@ -1,1 +1,0 @@
-grep ${1} /etc/hosts | head -1 | cut -f 1
