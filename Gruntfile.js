@@ -319,7 +319,7 @@ module.exports = function(grunt) {
                 protocol : "tcp",
                 portRangeMin : 7078,
                 portRangeMax : 7084,
-                remoteIpNodePrefixes : [ "master" ],
+                remoteIpNodePrefixes : [ "master", "slave" ],
                 remoteIpPrefix : grunt.customConfig.devIPs
               } ]
             }
