@@ -5,6 +5,15 @@ Grunt tasks to define and deploy the cluster used for SCATS traffic data analysi
 The Docker images contain Spark, R, and the Spark stand-alone cluster manager.
 
 
+## Installation
+
+* Install Node v0.10.x
+* Install Docker
+* Start Docker daemon
+* Install the Node.js modules with: `npm install` 
+* Create a file named `sensitive.json` containing all the credentials to access the NeCTAR cloud (see `sensitive.json.template`, remember that user_data is not to be changed, as it installs Docker on the provisioned nodes)
+
+
 ## Usage
 
 
