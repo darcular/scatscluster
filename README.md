@@ -8,6 +8,8 @@ The Docker images contain Spark, R, and the Spark stand-alone cluster manager.
 ## Installation
 
 * Install Node v0.10.x
+* Install npm
+* Install Grunt (`npm install -g grunt-cli`)
 * Install Docker
 * Start Docker daemon
 * Install the Node.js modules with: `npm install` 
