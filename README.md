@@ -29,12 +29,19 @@ It should show all the nodes defined in the Gruntfile.
 
 `grunt pull && grunt run`
 
-FIXME: for some reasons, `driver.host` is not set in the `spark-defaults.conf` file,
-hence Spark master has to be re-started:
+
+### Test of deployment
+
+* Go to `http://<spark master ip>:8080` (the spark master IP can be inferred from the output of the `grunt listnodes` command, and check all the slaves are shown as workers. 
+
+FIXME: Sometimes the last Docker container of the list does not start (a slave),
+hence it has to be started, which could be done by: `grunt stop && grunt start`
+
+FIXME: The `driver.host` is not set in the `spark-defaults.conf` file of the spark master Docker container, hence Spark master has to be re-started.
 * SSH to the master node
-* Open a shell on the Spark Docker container:
+* Open a shell on the Spark master Docker container:
 `docker exec -ti <spark docker container id> /bin/bash`
-* Executes: `shutdown.sh && startup.sh`
+* Executes: `shutdown.sh && startup.sh` in the Docker container
 
 
 ## Test of the cluster with SparkR
@@ -139,6 +146,13 @@ ${SPARK_HOME}/bin/spark-submit \
   /usr/local/spark-1.6.0-bin-hadoop2.6/lib/spark-examples-1.6.0-hadoop2.6.0.jar \
   10
 ```
+
+To see the result of the PI computation:
+* Go to `http://<spark master ip>:8080`
+* Find your program in the "Completed Drivers" list and click on its name
+* In the webpage that opens, find your program in the "Finished Drivers" list (bottom of page) and click on "stdout"
+* The output should look like: `Pi is roughly 3.142308` 
+
 
 ### Nodes deletion (deletes all nodes in the cluster)
 

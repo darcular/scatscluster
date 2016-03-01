@@ -1,7 +1,7 @@
 {
   "name": "scatsluster",
-  "version": "0.1.0-SNAPSHOT",
-  "description": "Build of the SCATS cluster",
+  "version": "0.1.0",
+  "description": "Proivsioning and deployment of a traffic data-analyzing cluster",
   "private": true,
   "author": {
     "name": "Luca Morandini",
