@@ -37,12 +37,12 @@ module.exports = function(grunt) {
             images : {
               clusternode : {
                 dockerfile : "./images/clusternode",
-                tag : "0.1.0",
+                tag : "0.2.0",
                 repo : "clusternode",
                 options : {
                   build : {
                     t : grunt.sensitiveConfig.docker.registry.serveraddress
-                        + "/clusternode:" + "0.1.0",
+                        + "/clusternode:" + "0.2.0",
                     pull : false,
                     nocache : false
                   },
@@ -66,6 +66,52 @@ module.exports = function(grunt) {
                   }
                 }
               },
+              hadoopmaster : {
+                dockerfile : "./images/hadoopmaster",
+                tag : "2.6.0",
+                repo : "hadoopmaster",
+                options : {
+                  build : {
+                    t : grunt.sensitiveConfig.docker.registry.serveraddress
+                        + "/hadoopmaster:" + "2.6.0",
+                    pull : false,
+                    nocache : false
+                  },
+                  run : {
+                    create : {
+                      Hostname : "hadoopmaster",
+                      HostConfig : {
+                        NetworkMode : "host"
+                      }
+                    },
+                    start : {},
+                    cmd : []
+                  }
+                }
+              },
+              hadoopslave : {
+                dockerfile : "./images/hadoopslave",
+                tag : "2.6.0",
+                repo : "hadoopslave",
+                options : {
+                  build : {
+                    t : grunt.sensitiveConfig.docker.registry.serveraddress
+                        + "/hadoopslave:" + "2.6.0",
+                    pull : false,
+                    nocache : false
+                  },
+                  run : {
+                    create : {
+                      Hostname : "hadoopslave",
+                      HostConfig : {
+                        NetworkMode : "host"
+                      }
+                    },
+                    start : {},
+                    cmd : []
+                  }
+                }
+              },
               sparkmaster : {
                 dockerfile : "./images/sparkmaster",
                 tag : "1.6.0",
@@ -80,62 +126,13 @@ module.exports = function(grunt) {
                   run : {
                     create : {
                       Hostname : "sparkmaster",
-                      ExposedPorts : {
-                        "22/tcp" : {},
-                        "4040/tcp" : {},
-                        "6066/tcp" : {},
-                        "7077/tcp" : {},
-                        "8080/tcp" : {},
-                        "18080/tcp" : {},
-                        "7079/tcp" : {},
-                        "7080/tcp" : {},
-                        "7081/tcp" : {},
-                        "7082/tcp" : {},
-                        "7083/tcp" : {},
-                        "7084/tcp" : {}
-                      },
                       HostConfig : {
-                        NetworkMode : "host",
-                        PortBindings : {
-                          "4040/tcp" : [ {
-                            HostPort : "4040"
-                          } ],
-                          "6066/tcp" : [ {
-                            HostPort : "6066"
-                          } ],
-                          "7077/tcp" : [ {
-                            HostPort : "7077"
-                          } ],
-                          "8080/tcp" : [ {
-                            HostPort : "8080"
-                          } ],
-                          "18080/tcp" : [ {
-                            HostPort : "18080"
-                          } ],
-                          "7079/tcp" : [ {
-                            HostPort : "7079"
-                          } ],
-                          "7080/tcp" : [ {
-                            HostPort : "7080"
-                          } ],
-                          "7081/tcp" : [ {
-                            HostPort : "7081"
-                          } ],
-                          "7082/tcp" : [ {
-                            HostPort : "7082"
-                          } ],
-                          "7083/tcp" : [ {
-                            HostPort : "7083"
-                          } ],
-                          "7084/tcp" : [ {
-                            HostPort : "7084"
-                          } ],
-                        }
+                        NetworkMode : "host"
                       }
                     },
                     start : {},
                     cmd : []
-                  },
+                  }
                 }
               },
               sparkslave : {
@@ -151,60 +148,14 @@ module.exports = function(grunt) {
                   },
                   run : {
                     create : {
-                      "clouddity:HostAliases" : [ "scats-1-master:sparkmaster" ],
                       Hostname : "sparkslave",
-                      ExposedPorts : {
-                        "22/tcp" : {},
-                        "4040/tcp" : {},
-                        "7078/tcp" : {},
-                        "8081/tcp" : {},
-                        "18080/tcp" : {},
-                        "7079/tcp" : {},
-                        "7080/tcp" : {},
-                        "7081/tcp" : {},
-                        "7082/tcp" : {},
-                        "7083/tcp" : {},
-                        "7084/tcp" : {}
-                      },
                       HostConfig : {
-                        NetworkMode : "host",
-                        PortBindings : {
-                          "4040/tcp" : [ {
-                            HostPort : "4040"
-                          } ],
-                          "7078/tcp" : [ {
-                            HostPort : "7078"
-                          } ],
-                          "8081/tcp" : [ {
-                            HostPort : "8081"
-                          } ],
-                          "18080/tcp" : [ {
-                            HostPort : "18080"
-                          } ],
-                          "7079/tcp" : [ {
-                            HostPort : "7079"
-                          } ],
-                          "7080/tcp" : [ {
-                            HostPort : "7080"
-                          } ],
-                          "7081/tcp" : [ {
-                            HostPort : "7081"
-                          } ],
-                          "7082/tcp" : [ {
-                            HostPort : "7082"
-                          } ],
-                          "7083/tcp" : [ {
-                            HostPort : "7083"
-                          } ],
-                          "7084/tcp" : [ {
-                            HostPort : "7084"
-                          } ]
-                        }
+                        NetworkMode : "host"
                       }
                     },
                     start : {},
                     cmd : []
-                  },
+                  }
                 }
               }
             }
@@ -216,6 +167,50 @@ module.exports = function(grunt) {
           docker : grunt.sensitiveConfig.docker,
 
           cluster : "scats",
+
+          nodetypes : [
+              {
+                name : "master",
+                replication : 1,
+                imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
+                flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
+                securitygroups : [ "default", "sparkmasterwebui",
+                    "sparkmaster", "hadoopwebui", "hadoop" ],
+                images : [ "sparkmaster", "hadoopmaster" ],
+                test : [ {
+                  name : "Spark Master WebUI",
+                  protocol : "http",
+                  port : 8080,
+                  path : "/",
+                  shouldContain : "Spark Master at spark:"
+                }, {
+                  name : "HDFS Master WebUI",
+                  protocol : "http",
+                  port : 50070,
+                  path : "/jmx",
+                  query : {
+                    "qry" : "Hadoop:service=NameNode,name=FSNamesystemState"
+                  },
+                  shouldContain : "\"NumLiveDataNodes\" : 2"
+                } ]
+              },
+              {
+                name : "slave",
+                // replication : 3,
+                replication : 1,
+                imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
+                flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
+                securitygroups : [ "default", "sparkslavewebui", "sparkslave",
+                    "hadoopwebui", "hadoop" ],
+                images : [ "sparkslave", "hadoopslave" ],
+                test : [ {
+                  name : "Spark Slave WebUI",
+                  protocol : "http",
+                  port : 8081,
+                  path : "/",
+                  shouldContain : "Spark Worker at"
+                } ]
+              } ],
 
           securitygroups : {
             "default" : {
@@ -238,7 +233,73 @@ module.exports = function(grunt) {
               } ]
             },
 
-            masterwebconsole : {
+            hadoop : {
+              description : "Opens Hadoop and YARN ports to the cluster and dev machines",
+              rules : [ {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 8020,
+                portRangeMax : 8042,
+                remoteIpNodePrefixes : [ "master", "slave" ],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              }, {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 9000,
+                portRangeMax : 9000,
+                remoteIpNodePrefixes : [ "master", "slave" ],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              }, {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 50010,
+                portRangeMax : 50105,
+                remoteIpNodePrefixes : [ "master", "slave" ],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              }, ]
+            },
+
+            hadoopwebui : {
+              description : "Opens Hadoop admin UIs ports to the cluster and dev machines",
+              rules : [ {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 8088,
+                portRangeMax : 8088,
+                remoteIpNodePrefixes : [],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              }, {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 50070,
+                portRangeMax : 50070,
+                remoteIpNodePrefixes : [],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              }, {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 50075,
+                portRangeMax : 50075,
+                remoteIpNodePrefixes : [],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              }, {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 51111,
+                portRangeMax : 51111,
+                remoteIpNodePrefixes : [],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              } ]
+            },
+
+            sparkmasterwebui : {
               description : "Opens the master web console ports to dev machines",
               rules : [ {
                 direction : "ingress",
@@ -264,7 +325,7 @@ module.exports = function(grunt) {
               } ]
             },
 
-            slavewebconsole : {
+            sparkslavewebui : {
               description : "Opens the slave web console ports to dev machines",
               rules : [ {
                 direction : "ingress",
@@ -291,7 +352,7 @@ module.exports = function(grunt) {
             },
 
             sparkmaster : {
-              description : "Opens the Spark ports to dev machines and the cluster",
+              description : "Opens Spark ports to dev machines and the cluster",
               rules : [ {
                 direction : "ingress",
                 ethertype : "IPv4",
@@ -312,7 +373,7 @@ module.exports = function(grunt) {
             },
 
             sparkslave : {
-              description : "Opens the Spark to the master and dev machines",
+              description : "Opens the Spark to the cluster and dev machines",
               rules : [ {
                 direction : "ingress",
                 ethertype : "IPv4",
@@ -322,38 +383,37 @@ module.exports = function(grunt) {
                 remoteIpNodePrefixes : [ "master", "slave" ],
                 remoteIpPrefix : grunt.customConfig.devIPs
               } ]
-            }
-          },
+            },
 
-          nodetypes : [ {
-            name : "master",
-            replication : 1,
-            imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
-            flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
-            securitygroups : [ "default", "masterwebconsole", "sparkmaster" ],
-            images : [ "sparkmaster" ],
-            test : [ {
-              name : "Master WebUI",
-              protocol : "http",
-              port : 8080,
-              path : "/",
-              shouldContain : "Spark Master at spark:"
-            } ]
-          }, {
-            name : "slave",
-            replication : 3,
-            imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
-            flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
-            securitygroups : [ "default", "slavewebconsole", "sparkslave" ],
-            images : [ "sparkslave" ],
-            test : [ {
-              name : "Slave WebUI",
-              protocol : "http",
-              port : 8081,
-              path : "/",
-              shouldContain : "Spark Worker at"
-            } ]
-          } ]
+            zookeeper : {
+              description : "Opens Hadoop and YARN ports to the cluster and dev machines",
+              rules : [ {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 2181,
+                portRangeMax : 2181,
+                remoteIpNodePrefixes : [ "master", "slave" ],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              }, {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 2888,
+                portRangeMax : 2888,
+                remoteIpNodePrefixes : [ "master", "slave" ],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              }, {
+                direction : "ingress",
+                ethertype : "IPv4",
+                protocol : "tcp",
+                portRangeMin : 3888,
+                portRangeMax : 3888,
+                remoteIpNodePrefixes : [ "master", "slave" ],
+                remoteIpPrefix : grunt.customConfig.devIPs
+              } ]
+            }
+          }
         }
       });
 
@@ -368,12 +428,10 @@ module.exports = function(grunt) {
   // Pushes the Docker images to registry
   grunt.registerTask("push", [ "dock:push" ]);
 
-  // Utility tasks to create and drop the cluster in one go
+  // Provisions the VMs
   grunt.registerTask("launch", [ "clouddity:createsecuritygroups", "wait",
       "clouddity:createnodes", "wait", "clouddity:updatesecuritygroups",
       "wait", "clouddity:addhosts" ]);
-  grunt.registerTask("destroy", [ "clouddity:destroynodes", "wait",
-      "clouddity:destroysecuritygroups" ]);
 
   // Pulls the Docker images from registry
   grunt.registerTask("pull", [ "clouddity:pull" ]);
@@ -394,10 +452,15 @@ module.exports = function(grunt) {
   grunt.registerTask("stop", [ "clouddity:stop" ]);
   grunt.registerTask("start", [ "clouddity:start" ]);
 
+  // Tests the deployed containers
+  grunt.registerTask("test", [ "clouddity:test" ]);
+
   // Docker containers removal
   grunt
       .registerTask("remove", [ "clouddity:stop", "wait", "clouddity:remove" ]);
 
-  // Tests the deployed containers
-  grunt.registerTask("test", [ "clouddity:test" ]);
+  // Destroy the VMs
+  grunt.registerTask("destroy", [ "clouddity:destroynodes", "wait",
+      "clouddity:destroysecuritygroups" ]);
+
 };

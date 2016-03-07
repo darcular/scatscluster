@@ -2,7 +2,7 @@
 # Creates a Slave Spark 1.6.0 Docker image
 #
 
-FROM docker.eresearch.unimelb.edu.au/clusternode:0.1.0
+FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
 
 # Installs Spark
 RUN curl -s http://apache.mirror.digitalpacific.com.au/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz | \
@@ -10,7 +10,7 @@ RUN curl -s http://apache.mirror.digitalpacific.com.au/spark/spark-1.6.0/spark-1
 RUN cd /usr/local && ln -s ./spark-1.6.0-bin-hadoop2.6 spark
 
 # Installs R
-RUN apt-get update
+RUN apt-get update -y
 RUN apt-get install r-base -y
 
 ENV SPARK_HOME /usr/local/spark
@@ -30,10 +30,13 @@ ENV SPARK_BLOCKMANAGER_PORT=7083
 ENV SPARK_EXECUTOR_PORT=7084
 ENV SPARK_UI_PORT=4040
 
+# FIXME: this depends on the name of the cluster
 ENV SPARK_MASTER_IP=scats-1-master
 ENV STANDALONE_SPARK_MASTER_HOST=${SPARK_MASTER_IP}
 
+# FIXME: this fiel has a dependence on the name of the cluster
 COPY setip.sh ${SPARK_HOME}/bin
+
 COPY startup.sh ${SPARK_HOME}/sbin
 COPY shutdown.sh ${SPARK_HOME}/sbin
 RUN chmod a+x ${SPARK_HOME}/bin/*.sh 

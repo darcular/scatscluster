@@ -2,7 +2,7 @@
 # Creates a Master Spark 1.6.0 Docker image
 #
 
-FROM docker.eresearch.unimelb.edu.au/clusternode:0.1.0
+FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
 
 # Installs Spark
 RUN curl -s http://apache.mirror.digitalpacific.com.au/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz | \
@@ -10,7 +10,7 @@ RUN curl -s http://apache.mirror.digitalpacific.com.au/spark/spark-1.6.0/spark-1
 RUN cd /usr/local && ln -s ./spark-1.6.0-bin-hadoop2.6 spark
 
 # Installs R
-RUN apt-get update
+RUN apt-get update -y
 RUN apt-get install r-base -y
  
 ENV SPARK_HOME /usr/local/spark

@@ -1,6 +1,6 @@
 {
   "name": "scatsluster",
-  "version": "0.1.0",
+  "version": "0.2.0-SNAPSHOT",
   "description": "Proivsioning and deployment of a traffic data-analyzing cluster",
   "private": true,
   "author": {

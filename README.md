@@ -2,7 +2,7 @@
 
 Grunt tasks to define and deploy the cluster used for SCATS traffic data analysis.
 
-The Docker images contain Spark, R, and the Spark stand-alone cluster manager.
+The Docker images contain Hhadoop, YARN, Spark, R.
 
 
 ## Installation
@@ -27,6 +27,9 @@ The Docker images contain Spark, R, and the Spark stand-alone cluster manager.
 ### Docker images building and pushing to repository
 
 `grunt build && grunt push`
+
+A single image can be build by specifying the image name as defined in the Gruntfile (see grunt-docker documentation):
+`grunt docker:build:<image name>`
 
 
 ### List of cluster nodes
