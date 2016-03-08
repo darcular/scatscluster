@@ -53,7 +53,6 @@ module.exports = function(grunt) {
                         "22/tcp" : {}
                       },
                       HostConfig : {
-                        Binds : [],
                         PortBindings : {
                           "22/tcp" : [ {
                             HostPort : "2022"
@@ -81,6 +80,7 @@ module.exports = function(grunt) {
                     create : {
                       Hostname : "hadoopmaster",
                       HostConfig : {
+                        Binds : [ "/tmp:/hosttmp" ],
                         NetworkMode : "host"
                       }
                     },
@@ -196,8 +196,7 @@ module.exports = function(grunt) {
               },
               {
                 name : "slave",
-                // replication : 3,
-                replication : 1,
+                replication : 4,
                 imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
                 flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
                 securitygroups : [ "default", "sparkslavewebui", "sparkslave",

@@ -43,8 +43,33 @@ It should show all the nodes defined in the Gruntfile.
 
 `grunt pull && grunt run`
 
+To check the effective start of containers, use:
+`grunt test`
 
-### Test of deployment
+If some tests fails a restart may be needed:
+`grunt stop && grunt start`
+
+
+### Test of Hadoop deployment
+
+* SSH into the `scats-1-master` host (the master node, with, say an IP address of `115.146.94.201`), and grab the Hadoop Docker container ID (say, `6be6f25e5dca`):
+`ssh ubuntu@115.146.94.201`
+`docker ps | grep hadoop`
+* Create an alias to simplify sending commands to HDFS using the [FS shell](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html) : 
+`alias hdfs="ssh ubuntu@115.146.94.201 -C \"docker exec -i 6be6f25e5dca hadoop fs ${1}\""`
+* List the contents of the root HDFS directory (it should be empty):
+`hdfs "-ls hdfs://115.146.94.201:9000/"`
+* If not already there, create the scats directory:
+`hdfs "-mkdir hdfs://115.146.94.201:9000/scats"`
+* Copy some test data (say, VolumeDataSample0.csv) from your local machine into the master host with SCP:
+`scp ./test/data/VolumeDataSample0.csv ubuntu@115.146.94.201:/tmp`
+`hdfs "-copyFromLocal /hosttmp/VolumeDataSample0.csv hdfs://115.146.94.201:9000/scats/"`
+(the `/hosttmp` volume is mounted in every container and corresponds to the `/tmp` directory on the host)
+* List the contents of the scats HDFS directory (the file should show up):
+`hdfs "-ls hdfs://115.146.94.201:9000/scats"`
+
+
+### Test of Spark deployment
 
 * Go to `http://<spark master ip>:8080` (the spark master IP can be inferred from the output of the `grunt listnodes` command, and check all the slaves are shown as workers. 
 
@@ -88,14 +113,12 @@ for (wordcount in output) {
 
 ## Test of the cluster with Spark-shell
 
-Self-contained example (of course, it is client deploy mode):
+Self-contained example (of course, it is client deploy mode and must be executed within the sparkmaster Docker container):
 
 ```
 source setip.sh
 spark-shell --deploy-mode client \
   --master spark://${SPARK_MASTER_IP}:${SPARK_MASTER_PORT} \
-  --total-executor-cores 1 \
-  --total-executor-cores 1 \
   --properties-file ${SPARK_HOME}/conf/spark-defaults.conf 
 ```
 
