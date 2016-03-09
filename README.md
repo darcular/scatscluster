@@ -1,4 +1,4 @@
-# scatscluster
+# ScatsCluster
 
 Grunt tasks to define and deploy the cluster used for SCATS traffic data analysis.
 
@@ -62,8 +62,10 @@ If some tests fails a restart may be needed:
 * If not already there, create the scats directory:
 `hdfs "-mkdir hdfs://115.146.94.201:9000/scats"`
 * Copy some test data (say, VolumeDataSample0.csv) from your local machine into the master host with SCP:
-`scp ./test/data/VolumeDataSample0.csv ubuntu@115.146.94.201:/tmp`
-`hdfs "-copyFromLocal /hosttmp/VolumeDataSample0.csv hdfs://115.146.94.201:9000/scats/"`
+```
+scp ./test/data/VolumeDataSample0.csv ubuntu@115.146.94.201:/tmp
+hdfs "-copyFromLocal /hosttmp/VolumeDataSample0.csv hdfs://115.146.94.201:9000/scats/"
+```
 (the `/hosttmp` volume is mounted in every container and corresponds to the `/tmp` directory on the host)
 * List the contents of the scats HDFS directory (the file should show up):
 `hdfs "-ls hdfs://115.146.94.201:9000/scats"`
