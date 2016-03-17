@@ -24,11 +24,11 @@
       "port" : 2375
     },
     "registry" : {
-      "serveraddress" : "docker.eresearch.unimelb.edu.au",
+      "serveraddress" : "cuttlefish.eresearch.unimelb.edu.au",
       "auth" : {
-        "email" : "<usually your email address>",
-        "username" : "deployer",
-        "password" : "<you know>"
+        "email" : "a",
+        "username" : "b",
+        "password" : "c"
       }
     }
   }

@@ -1,11 +1,8 @@
 #
-# Creates a SSH, password-less Docker image with Java 8 on
+# Creates a SSH Docker image with Java 8 on
 #
 
 FROM ubuntu:14.04
-
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-ENV PATH ${PATH}:${JAVA_HOME}
 
 # Installs dev tools
 RUN apt-get update
@@ -14,13 +11,8 @@ RUN apt-get install -y software-properties-common python3-software-properties \
   curl tar sudo telnet
 
 # installs Java 8
-RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install -y oracle-java8-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
+RUN apt-get install -y default-jre-headless
+ENV PATH ${PATH}:${JAVA_HOME}
 
 COPY sshconf/* /etc/ssh/
 COPY dotssh/* /root/.ssh/

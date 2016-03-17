@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         wait : {
           options : {
             // Two minutes
-            delay : 120000
+            delay : 60000
           },
           pause : {
             options : {
@@ -191,7 +191,7 @@ module.exports = function(grunt) {
                   query : {
                     "qry" : "Hadoop:service=NameNode,name=FSNamesystemState"
                   },
-                  shouldContain : "\"NumLiveDataNodes\" : 2"
+                  shouldContain : "\"NumLiveDataNodes\" : 5"
                 } ]
               },
               {
@@ -434,10 +434,6 @@ module.exports = function(grunt) {
 
   // Pulls the Docker images from registry
   grunt.registerTask("pull", [ "clouddity:pull" ]);
-
-  // Generate configuration and copies to the hosts
-  grunt.registerTask("generate", [ "clean", "mkdir", "ejs",
-      "clouddity:copytohost" ]);
 
   // Listing cluster components tasks
   grunt.registerTask("listsecuritygroups", [ "clouddity:listsecuritygroups" ]);
