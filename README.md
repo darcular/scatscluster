@@ -11,7 +11,7 @@ The Docker images contain Hhadoop, YARN, Spark, R.
 * Install npm
 * Install Grunt (`npm install -g grunt-cli`)
 * Install Docker
-* Start Docker daemon
+* Start the Docker daemon (`docker -d -H localhost:2375`)
 * Install the Node.js modules with: `npm install` 
 * Create a file named `sensitive.json` containing all the credentials to access the NeCTAR cloud (see `sensitive.json.template`). The `user_data` property is not to be changed (it installs Docker on the provisioned nodes), nor it is to be changed the `docker.registry` property (it is already set for a public Docker registry).
 
