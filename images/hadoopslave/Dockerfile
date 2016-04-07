@@ -4,7 +4,8 @@
 # then vastly modified
 #
 
-FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
+#FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
+FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.2.0
 
 ENV HADOOP_PREFIX /usr/local/hadoop
 ENV HADOOP_HDFS_HOME /usr/local/hadoop
