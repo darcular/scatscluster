@@ -192,6 +192,7 @@ To see the result of the PI computation:
 `grunt destroy`
 
 
+
 ## Notes
 
 * If, during the `push` command execution, an HTTP 409 error is raised,
