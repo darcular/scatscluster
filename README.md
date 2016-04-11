@@ -29,7 +29,7 @@ The Docker images contain Hhadoop, YARN, Spark, R.
 `grunt build && grunt push`
 
 A single image can be build by specifying the image name as defined in the Gruntfile (see grunt-docker documentation):
-`grunt docker:build:<image name>`
+`grunt dock:build:<image name>`
 
 
 ### List of cluster nodes
@@ -45,9 +45,6 @@ It should show all the nodes defined in the Gruntfile.
 
 To check the effective start of containers, use:
 `grunt test`
-
-If some tests fails a restart may be needed:
-`grunt stop && grunt start`
 
 
 ### Test of Hadoop deployment
@@ -197,4 +194,10 @@ To see the result of the PI computation:
 
 `grunt destroy`
 
+
+## Notes
+
+* If, during the `push` command execution, an HTTP 409 error is raised,
+it may be necessary to clean up your local Docker repository by issuing: `grunt dock:clean`.
+* To simplify test and use, you may want to add hostnames and IP addresses as can be inferred from `grunt listnodes` to `/etc/hosts`. After this, you can  use `scats-1-master` instead of `115.146.93.132`.
 
