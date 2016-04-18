@@ -31,5 +31,11 @@
         "password" : "c"
       }
     }
+  },
+  "test" : {
+    "auth" : {
+      "username" : "testuser",
+      "password" : "testpasswd"
+    }
   }
 }

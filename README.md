@@ -196,5 +196,5 @@ To see the result of the PI computation:
 
 * If, during the `push` command execution, an HTTP 409 error is raised,
 it may be necessary to clean up your local Docker repository by issuing: `grunt dock:clean`.
-* To simplify test and use, you may want to add hostnames and IP addresses as can be inferred from `grunt listnodes` to `/etc/hosts`. After this, you can  use `scats-1-master` instead of `115.146.93.132`.
+* To simplify test and use, you may want to add hostnames and IP addresses as can be inferred from `grunt listnodes --hosts-format` to `/etc/hosts`. After this, you can  use `scats-1-master` instead of `115.146.93.132`.
 
