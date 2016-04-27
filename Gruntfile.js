@@ -192,6 +192,11 @@ module.exports = function(grunt) {
                     "qry" : "Hadoop:service=NameNode,name=FSNamesystemState"
                   },
                   shouldContain : "\"NumLiveDataNodes\" : 5"
+                }, {
+                  name : "Spark ReST service",
+                  protocol : "http",
+                  port : 6066,
+                  shouldContain : "Missing protocol version"
                 } ]
               },
               {

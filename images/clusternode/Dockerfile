@@ -11,7 +11,7 @@ RUN apt-get install -y software-properties-common python3-software-properties \
   curl tar sudo telnet
 
 # installs Java 8
-RUN apt-get install -y default-jre-headless
+RUN apt-get install -y openjdk-8-jre
 ENV PATH ${PATH}:${JAVA_HOME}
 
 COPY sshconf/* /etc/ssh/
