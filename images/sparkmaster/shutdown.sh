@@ -1,2 +1,3 @@
-stop-history-server.sh
-stop-master.sh
+#!/bin/bash
+${SPARK_HOME}/sbin/stop-history-server.sh
+${SPARK_HOME}/sbin/stop-master.sh

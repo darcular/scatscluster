@@ -5,13 +5,14 @@
 #
 
 #FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
-FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.2.0
+FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.3.0
 
 ENV HADOOP_PREFIX /usr/local/hadoop
 ENV HADOOP_HDFS_HOME ${HADOOP_PREFIX}
 ENV HADOOP_MAPRED_HOME ${HADOOP_PREFIX}
 ENV HADOOP_YARN_HOME ${HADOOP_PREFIX}
 ENV HADOOP_CONF_DIR ${HADOOP_PREFIX}/etc/hadoop
+ENV HADOOP_LOG_DIR ${HADOOP_PREFIX}/logs
 
 # FIXME: this is hardcoded in hdfs-site.xml
 ENV HADOOP_NAME_DIR /var/hdfs
@@ -65,10 +66,8 @@ RUN echo "Port 2122" >> /etc/ssh/sshd_config
 #RUN service ssh start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root
 #RUN service ssh start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
 
-
 # Initializes the Hadoop file system
 RUN mkdir ${HADOOP_NAME_DIR}
-ENV HADOOP_LOG_DIR ${HADOOP_PREFIX}/logs
 RUN $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
 # FIXME: hostnames are hardcoded
 
@@ -80,8 +79,6 @@ RUN sleep 30 && hdfs namenode -format
 #    start-dfs.sh && \
 #    hdfs dfs -mkdir -p /user/root && \
 #    hdfs dfs -put ${HADOOP_PREFIX}/etc/hadoop/ input
-
-
 
 # Starts HDFS datanode, namenode, and YARN
 ENTRYPOINT /etc/startup.sh && tail -f /dev/null

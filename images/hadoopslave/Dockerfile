@@ -5,7 +5,7 @@
 #
 
 #FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
-FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.2.0
+FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.3.0
 
 ENV HADOOP_PREFIX /usr/local/hadoop
 ENV HADOOP_HDFS_HOME /usr/local/hadoop
@@ -14,13 +14,14 @@ ENV HADOOP_YARN_HOME /usr/local/hadoop
 ENV HADOOP_CONF_DIR /usr/local/hadoop/etc/hadoop
 ENV YARN_CONF_DIR ${HADOOP_PREFIX}/etc/hadoop
 ENV PATH ${PATH}:${HADOOP_PREFIX}/bin:${HADOOP_PREFIX}/sbin
+ENV HADOOP_LOG_DIR ${HADOOP_PREFIX}/logs
 
 # Installs Hadoop 2.6.0
 RUN curl -s http://www.eu.apache.org/dist/hadoop/common/hadoop-2.6.0/hadoop-2.6.0.tar.gz \
     | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.6.0 hadoop
 
-RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/lib/jvm/java-8-oracle/\nexport \
+RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/lib/jvm/default-java/\nexport \
     HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_PREFIX=/usr/local/hadoop\n:' \
     ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
 RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' \

@@ -37,12 +37,12 @@ module.exports = function(grunt) {
             images : {
               clusternode : {
                 dockerfile : "./images/clusternode",
-                tag : "0.2.0",
+                tag : "0.3.0",
                 repo : "clusternode",
                 options : {
                   build : {
                     t : grunt.sensitiveConfig.docker.registry.serveraddress
-                        + "/clusternode:" + "0.2.0",
+                        + "/clusternode:" + "0.3.0",
                     pull : false,
                     nocache : false
                   },

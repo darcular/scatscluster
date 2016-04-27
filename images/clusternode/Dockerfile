@@ -2,7 +2,7 @@
 # Creates a SSH Docker image with Java 8 on
 #
 
-FROM ubuntu:14.04
+FROM ubuntu:15.04
 
 # Installs dev tools
 RUN apt-get update

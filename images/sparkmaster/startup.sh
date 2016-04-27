@@ -1,5 +1,5 @@
-
-source setip.sh
+#!/bin/bash
+source ${SPARK_HOME}/sbin/setip.sh
 
 echo "spark.driver.port ${SPARK_DRIVER_PORT}" > ${SPARK_CONF_FILE}
 echo "spark.fileserver.port ${SPARK_FILESERVER_PORT}" >> ${SPARK_CONF_FILE}
@@ -23,6 +23,6 @@ export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=${SPARK_HISTORY_WEBUI_PORT} \
   -Dspark.io.compression.codec=lzf -Dspark.eventLog.enabled=true \
   -Dspark.eventLog.dir=file://${SPARK_EVENT_HOME}/"
 
-start-master.sh
-start-history-server.sh
+${SPARK_HOME}/sbin/start-master.sh
+${SPARK_HOME}/sbin/start-history-server.sh
 

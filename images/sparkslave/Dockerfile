@@ -3,7 +3,7 @@
 #
 
 #FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
-FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.2.0
+FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.3.0
 
 # Installs Spark
 RUN curl -s http://apache.mirror.digitalpacific.com.au/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz | \
@@ -35,8 +35,8 @@ ENV SPARK_UI_PORT=4040
 ENV SPARK_MASTER_IP=scats-1-master
 ENV STANDALONE_SPARK_MASTER_HOST=${SPARK_MASTER_IP}
 
-# FIXME: this fiel has a dependence on the name of the cluster
-COPY setip.sh ${SPARK_HOME}/bin
+# FIXME: this script has a dependence on the name of the cluster
+COPY setip.sh ${SPARK_HOME}/sbin
 
 COPY startup.sh ${SPARK_HOME}/sbin
 COPY shutdown.sh ${SPARK_HOME}/sbin
@@ -51,6 +51,6 @@ ENV SPARK_CONF_FILE=${SPARK_HOME}/conf/spark-defaults.conf
 RUN mkdir ${SPARK_LOG_HOME}
 RUN mkdir ${SPARK_EVENT_HOME}
 
-ENTRYPOINT startup.sh && tail -f /dev/null
+ENTRYPOINT ${SPARK_HOME}/sbin/startup.sh && tail -f /dev/null
 
 EXPOSE 22 4040 7078 8081 18080 7079 7080 7081 7082 7083

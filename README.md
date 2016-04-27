@@ -4,6 +4,10 @@ Grunt tasks to define and deploy the cluster used for SCATS traffic data analysi
 
 The Docker images contain Hhadoop, YARN, Spark, R.
 
+By default, the only clients that can access the web-ui of Hadoop (and Spark) and send jobs to be executed are the ones within the UniOfMelb LAN. However, this default can be changed by modifying the `custom-configuration.json` (before the provisioning of VMs, of course). 
+
+If, during the test of the Hadoop and Spark installation, the connection is refused when trying to access the web-uis (ports `8080`, `8088`, `50070`), it would be better to check the OpenStack security groups and the IP address of the client. 
+
 
 ## Installation
 
@@ -49,6 +53,8 @@ To check the effective start of containers, use:
 
 ### Test of Hadoop deployment
 
+* Go to `http://<spark master ip>:8088` (the spark master IP can be inferred from the output of the `grunt listnodes` command) and check all the slaves are shown as nodes. 
+* Go to `http://<spark master ip>:50070` and check all the slaves are shown as datanodes
 * SSH into the `scats-1-master` host (the master node, with, say an IP address of `115.146.94.201`), and grab the Hadoop Docker container ID (say, `6be6f25e5dca`):
 `ssh ubuntu@115.146.94.201`
 `docker ps | grep hadoop`
@@ -70,13 +76,7 @@ hdfs "-copyFromLocal /hosttmp/VolumeDataSample0.csv hdfs://115.146.94.201:9000/s
 
 ### Test of Spark deployment
 
-* Go to `http://<spark master ip>:8080` (the spark master IP can be inferred from the output of the `grunt listnodes` command, and check all the slaves are shown as workers. 
-
-FIXME: The `driver.host` is not set in the `spark-defaults.conf` file of the spark master Docker container, hence Spark master has to be re-started.
-* SSH to the master node
-* Open a shell on the Spark master Docker container:
-`docker exec -ti <spark docker container id> /bin/bash`
-* Executes: `shutdown.sh && startup.sh` in the Docker container
+* Go to `http://<spark master ip>:8080` (the spark master IP can be inferred from the output of the `grunt listnodes` command) and check all the slaves are shown as workers. 
 
 
 ## Test of the cluster with SparkR
@@ -84,7 +84,7 @@ FIXME: The `driver.host` is not set in the `spark-defaults.conf` file of the spa
 * SSH to the master node
 * Open a shell on the Spark Docker container:
 `docker exec -ti <spark docker container id> /bin/bash`
-* Executes: `source setip.sh && R`
+* Execute `source setip.sh && R`
 * Now that you are in R, execute (of course, it is client deploy mode):
 ```
 library("SparkR", lib.loc=file.path(Sys.getenv("SPARK_HOME"), "R/lib")); 
