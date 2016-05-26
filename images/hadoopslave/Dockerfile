@@ -21,12 +21,12 @@ RUN curl -s http://www.eu.apache.org/dist/hadoop/common/hadoop-2.6.0/hadoop-2.6.
     | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.6.0 hadoop
 
-RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/\nexport \
-    HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_PREFIX=/usr/local/hadoop\n:' \
-    ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
-RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' \
-    ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
-RUN . ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
+#RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/\
+#    export HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_PREFIX=/usr/local/hadoop\n:' \
+#    ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
+#RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' \
+#    ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
+#RUN . ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
 
 RUN mkdir ${HADOOP_PREFIX}/input
 RUN cp ${HADOOP_PREFIX}/etc/hadoop/*.xml ${HADOOP_PREFIX}/input

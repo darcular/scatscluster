@@ -24,12 +24,11 @@ RUN curl -s http://www.eu.apache.org/dist/hadoop/common/hadoop-2.6.0/hadoop-2.6.
     | tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.6.0 hadoop
 
-RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/\nexport \
-    HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_PREFIX=/usr/local/hadoop\n:' \
-    ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
-RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' \
-    ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
-RUN . ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
+#RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/\nexport \
+#    HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_PREFIX=/usr/local/hadoop\n:' \
+#    ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
+#RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' \
+#    ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh
 
 RUN mkdir ${HADOOP_PREFIX}/input
 RUN cp ${HADOOP_PREFIX}/etc/hadoop/*.xml ${HADOOP_PREFIX}/input
@@ -68,11 +67,12 @@ RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
 # Initializes the Hadoop file system
 RUN mkdir ${HADOOP_NAME_DIR}
-RUN $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
-# FIXME: hostnames are hardcoded
+#RUN $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
 
-COPY slaves ${HADOOP_CONF_DIR}/
-RUN sleep 30 && hdfs namenode -format
+# FIXME: hostnames are hardcoded
+#COPY slaves ${HADOOP_CONF_DIR}/
+
+RUN ${HADOOP_PREFIX}/bin/hdfs namenode -format
 
 #RUN service ssh start && \
 #    ${HADOOP_PREFIX}/etc/hadoop/hadoop-env.sh && \

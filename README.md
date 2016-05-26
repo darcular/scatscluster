@@ -15,7 +15,7 @@ If, during the test of the Hadoop and Spark installation, the connection is refu
 * Install npm
 * Install Grunt (`npm install -g grunt-cli`)
 * Install Docker
-* Start the Docker daemon (`docker -d -H localhost:2375`)
+* Start the Docker daemon (`docker -d -H localhost:2375`, or set `DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"` in `/etc/default/docker`
 * Install the Node.js modules with: `npm install` 
 * Create a file named `sensitive.json` containing all the credentials to access the NeCTAR cloud (see `sensitive.json.template`). The `user_data` property is not to be changed (it installs Docker on the provisioned nodes), nor it is to be changed the `docker.registry` property (it is already set for a public Docker registry).
 
@@ -30,9 +30,12 @@ If, during the test of the Hadoop and Spark installation, the connection is refu
 
 ### Docker images building and pushing to repository
 
+This step is not needed when up-to-date images are already on the Docker registry.
+
 `grunt build && grunt push`
 
 A single image can be build by specifying the image name as defined in the Gruntfile (see grunt-docker documentation):
+
 `grunt dock:build:<image name>`
 
 
@@ -45,7 +48,7 @@ It should show all the nodes defined in the Gruntfile.
 
 ### Docker images pulling to the nodes, and Docker containers creation and start
 
-`grunt pull && grunt run`
+`grunt pull && grunt create`
 
 To check the effective start of containers, use:
 `grunt test`
@@ -194,7 +197,10 @@ To see the result of the PI computation:
 
 ## Notes
 
-* If, during the `push` command execution, an HTTP 409 error is raised,
-it may be necessary to clean up your local Docker repository by issuing: `grunt dock:clean`.
-* To simplify test and use, you may want to add hostnames and IP addresses as can be inferred from `grunt listnodes --hosts-format` to `/etc/hosts`. After this, you can  use `scats-1-master` instead of `115.146.93.132`.
+* If, during the `push` command execution, a 409 HTTP error is raised,
+it may be necessary to clean up your local Docker repository by issuing: `grunt dock:clean`
+* To simplify test and use, you may want to add hostnames and IP addresses as can be inferred from `grunt listnodes --hosts-format` to `/etc/hosts`. After this, you can  use `scats-1-master` instead of, say, `115.146.93.132`
+* Some private registry may have self-signed certificates, causing the push and pull operations to return the "509: certificate signed by unknown authority" error message. To solve this you have to add `--insecure-registry <registry hostname>:<registry port (if different from 80)>` to the `DOCKER_OPTS` in `/etc/default/docker` (and restart the Docker service, of course) 
+
+
 

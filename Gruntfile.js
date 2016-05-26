@@ -10,8 +10,7 @@ module.exports = function(grunt) {
         pkg : grunt.file.readJSON("./package.json"),
         wait : {
           options : {
-            // Two minutes
-            delay : 60000
+            delay : 120000
           },
           pause : {
             options : {
@@ -78,7 +77,6 @@ module.exports = function(grunt) {
                   },
                   run : {
                     create : {
-                      Hostname : "hadoopmaster",
                       HostConfig : {
                         Binds : [ "/tmp:/hosttmp" ],
                         NetworkMode : "host"
@@ -102,7 +100,6 @@ module.exports = function(grunt) {
                   },
                   run : {
                     create : {
-                      Hostname : "hadoopslave",
                       HostConfig : {
                         NetworkMode : "host"
                       }
@@ -125,7 +122,6 @@ module.exports = function(grunt) {
                   },
                   run : {
                     create : {
-                      Hostname : "sparkmaster",
                       HostConfig : {
                         NetworkMode : "host"
                       }
@@ -148,7 +144,6 @@ module.exports = function(grunt) {
                   },
                   run : {
                     create : {
-                      Hostname : "sparkslave",
                       HostConfig : {
                         NetworkMode : "host"
                       }
@@ -172,7 +167,7 @@ module.exports = function(grunt) {
               {
                 name : "master",
                 replication : 1,
-                imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
+                imageRef : "73c6f8d8-f885-4253-8bee-e45da068fb65",
                 flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
                 securitygroups : [ "default", "sparkmasterwebui",
                     "sparkmaster", "hadoopwebui", "hadoop" ],
@@ -202,18 +197,25 @@ module.exports = function(grunt) {
               {
                 name : "slave",
                 replication : 4,
-                imageRef : "81f6b78f-6d51-4de9-a464-91d47543d4ba",
+                imageRef : "73c6f8d8-f885-4253-8bee-e45da068fb65",
                 flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
                 securitygroups : [ "default", "sparkslavewebui", "sparkslave",
                     "hadoopwebui", "hadoop" ],
                 images : [ "sparkslave", "hadoopslave" ],
-                test : [ {
-                  name : "Spark Slave WebUI",
-                  protocol : "http",
-                  port : 8081,
-                  path : "/",
-                  shouldContain : "Spark Worker at"
-                } ]
+                test : [
+                    {
+                      name : "Spark Slave WebUI",
+                      protocol : "http",
+                      port : 8081,
+                      path : "/",
+                      shouldContain : "Spark Worker at"
+                    },
+                    {
+                      name : "Haddop Slave RPC Jon History Server",
+                      protocol : "http",
+                      port : 50020,
+                      shouldContain : "It looks like you are making an HTTP request to a Hadoop IPC port"
+                    } ]
               } ],
 
           securitygroups : {
@@ -446,7 +448,7 @@ module.exports = function(grunt) {
   grunt.registerTask("listcontainers", [ "clouddity:listcontainers" ]);
 
   // Docker containers creation
-  grunt.registerTask("run", [ "clouddity:run" ]);
+  grunt.registerTask("create", [ "clouddity:run" ]);
 
   // Docker containers management
   grunt.registerTask("stop", [ "clouddity:stop" ]);

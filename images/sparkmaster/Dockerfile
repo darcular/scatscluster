@@ -5,10 +5,12 @@
 #FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
 FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.3.0
 
+ENV SPARK_VERSION=1.6.1
+
 # Installs Spark
-RUN curl -s http://apache.mirror.digitalpacific.com.au/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz | \
+RUN curl -s http://apache.mirror.digitalpacific.com.au/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz   | \
     tar -xz -C /usr/local/
-RUN cd /usr/local && ln -s ./spark-1.6.0-bin-hadoop2.6 spark
+RUN cd /usr/local && ln -s ./spark-${SPARK_VERSION}-bin-hadoop2.6 spark
 
 # Installs R
 RUN apt-get update -y

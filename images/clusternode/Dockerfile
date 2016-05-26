@@ -4,20 +4,17 @@
 
 FROM ubuntu:15.04
 
-# Installs dev tools
-RUN apt-get update
-RUN apt-get install -y software-properties-common python3-software-properties \
+# Installs dev tools and Java 8
+RUN apt-get update && apt-get install -y software-properties-common python3-software-properties \
   openssh-server openssh-client \
-  curl tar sudo telnet
-
-# installs Java 8
-RUN apt-get install -y openjdk-8-jre
+  curl tar sudo telnet net-tools vim openjdk-8-jre
+  
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH ${PATH}:${JAVA_HOME}
 
 COPY sshconf/* /etc/ssh/
 COPY dotssh/* /root/.ssh/
-RUN chmod -R 600 /etc/ssh
-RUN chmod -R 600 /root/.ssh
+RUN chmod -R 600 /etc/ssh && chmod -R 600 /root/.ssh
 
 ENTRYPOINT service ssh start && tail -f /dev/null
 
