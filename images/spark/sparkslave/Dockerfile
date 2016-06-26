@@ -1,29 +1,31 @@
 #
-# Creates a Master Spark 1.6.0 Docker image
+# Creates a Slave Spark 1.6.0 Docker image
 #
 
-#FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
-FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.3.0
+# FROM docker.eresearch.unimelb.edu.au/clusternode:0.2.0
+# FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.3.0
+FROM 115.146.95.30:5000/clusternode:0.3.0
 
 ENV SPARK_VERSION=1.6.1
 
 # Installs Spark
-RUN curl -s http://apache.mirror.digitalpacific.com.au/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz   | \
+RUN curl -s http://apache.mirror.serversaustralia.com.au/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz | \
     tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./spark-${SPARK_VERSION}-bin-hadoop2.6 spark
 
 # Installs R
 RUN apt-get update -y
 RUN apt-get install r-base -y
- 
+
 ENV SPARK_HOME /usr/local/spark
 ENV PATH ${PATH}:${SPARK_HOME}/bin:${SPARK_HOME}/sbin
 
-# Setups ports 
 ENV SPARK_MASTER_PORT=7077
 ENV SPARK_MASTER_WEBUI_PORT=8080
+ENV SPARK_WORKER_WEBUI_PORT=8081
 ENV SPARK_HISTORY_WEBUI_PORT=18080
 
+ENV SPARK_WORKER_PORT=7078
 ENV SPARK_DRIVER_PORT=7079
 ENV SPARK_FILESERVER_PORT=7080
 ENV SPARK_BROADCAST_PORT=7081
@@ -31,9 +33,14 @@ ENV SPARK_REPLCLASSSERVER_PORT=7082
 ENV SPARK_BLOCKMANAGER_PORT=7083
 ENV SPARK_EXECUTOR_PORT=7084
 ENV SPARK_UI_PORT=4040
-ENV SPARK_MASTER_REST_PORT=6066
 
+# FIXME: this depends on the name of the cluster
+ENV SPARK_MASTER_IP=scats-1-master
+ENV STANDALONE_SPARK_MASTER_HOST=${SPARK_MASTER_IP}
+
+# FIXME: this script has a dependence on the name of the cluster
 COPY setip.sh ${SPARK_HOME}/sbin
+
 COPY startup.sh ${SPARK_HOME}/sbin
 COPY shutdown.sh ${SPARK_HOME}/sbin
 RUN chmod a+x ${SPARK_HOME}/bin/*.sh 
@@ -49,4 +56,4 @@ RUN mkdir ${SPARK_EVENT_HOME}
 
 ENTRYPOINT ${SPARK_HOME}/sbin/startup.sh && tail -f /dev/null
 
-EXPOSE 22 4040 6066 7077 8080 18080 7079 7080 7081 7082 7083
+EXPOSE 22 4040 7078 8081 18080 7079 7080 7081 7082 7083

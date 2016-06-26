@@ -1,0 +1,7 @@
+<configuration>
+    <property>
+        <!--Fixme hard code-->
+        <name>fs.defaultFS</name>
+        <value>hdfs://scats-1-master:9000</value>
+    </property>
+</configuration>

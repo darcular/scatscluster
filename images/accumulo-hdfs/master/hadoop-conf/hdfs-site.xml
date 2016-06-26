@@ -1,0 +1,28 @@
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>2</value>
+    </property>
+
+    <property>
+        <name>dfs.name.superusergroup</name>
+        <value>supergroup</value>
+    </property>
+    <!--FIXME Config hdfs permission-->
+    <property>
+        <name>dfs.permissions.enabled</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/mnt/hadoop/dfs/data</value>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/mnt/hadoop/dfs/name</value>
+    </property>
+    <property>
+        <name>dfs.namenode.checkpoint.dir</name>
+        <value>/mnt/hadoop/dfs/namesecondary</value>
+    </property>
+</configuration>

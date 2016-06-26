@@ -29,3 +29,5 @@ node_modules
 # Sensitive data not to be shown on GitHub
 sensitive.json
 /hadoop-fragment.json
+
+/images/hadoop/

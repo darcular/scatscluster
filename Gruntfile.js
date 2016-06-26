@@ -1,427 +1,386 @@
 "use strict";
 
-module.exports = function(grunt) {
-
+module.exports = function (grunt) {
   grunt.sensitiveConfig = grunt.file.readJSON("./sensitive.json");
   grunt.customConfig = grunt.file.readJSON("./custom-configuration.json");
 
-  grunt
-      .initConfig({
-        pkg : grunt.file.readJSON("./package.json"),
-        wait : {
-          options : {
-            delay : 120000
+  grunt.initConfig({
+    pkg: grunt.file.readJSON("./package.json"),
+    wait: {
+      options: {
+        delay: 120000
+      },
+      pause: {
+        options: {
+          before: function (options) {
+            console.log("Pausing %ds", options.delay / 1000);
           },
-          pause : {
-            options : {
-              before : function(options) {
-                console.log("Pausing %ds", options.delay / 1000);
-              },
-              after : function() {
-                console.log("End pause");
-              }
-            }
-          }
-        },
-
-        dock : {
-          options : {
-            auth : grunt.sensitiveConfig.docker.registry.auth,
-            registry : grunt.sensitiveConfig.docker.registry.serveraddress,
-            // Local docker demon used to send Docker commands to the cluster
-            docker : grunt.sensitiveConfig.docker.master,
-            // Options for the Docker clients on the servers
-            dockerclient : grunt.sensitiveConfig.docker.client,
-
-            images : {
-              clusternode : {
-                dockerfile : "./images/clusternode",
-                tag : "0.3.0",
-                repo : "clusternode",
-                options : {
-                  build : {
-                    t : grunt.sensitiveConfig.docker.registry.serveraddress
-                        + "/clusternode:" + "0.3.0",
-                    pull : false,
-                    nocache : false
-                  },
-                  run : {
-                    create : {
-                      Hostname : "clusternode",
-                      ExposedPorts : {
-                        "22/tcp" : {}
-                      },
-                      HostConfig : {
-                        PortBindings : {
-                          "22/tcp" : [ {
-                            HostPort : "2022"
-                          } ]
-                        }
-                      },
-                      start : {},
-                      cmd : []
-                    }
-                  }
-                }
-              },
-              hadoopmaster : {
-                dockerfile : "./images/hadoopmaster",
-                tag : "2.6.0",
-                repo : "hadoopmaster",
-                options : {
-                  build : {
-                    t : grunt.sensitiveConfig.docker.registry.serveraddress
-                        + "/hadoopmaster:" + "2.6.0",
-                    pull : false,
-                    nocache : false
-                  },
-                  run : {
-                    create : {
-                      HostConfig : {
-                        Binds : [ "/tmp:/hosttmp" ],
-                        NetworkMode : "host"
-                      }
-                    },
-                    start : {},
-                    cmd : []
-                  }
-                }
-              },
-              hadoopslave : {
-                dockerfile : "./images/hadoopslave",
-                tag : "2.6.0",
-                repo : "hadoopslave",
-                options : {
-                  build : {
-                    t : grunt.sensitiveConfig.docker.registry.serveraddress
-                        + "/hadoopslave:" + "2.6.0",
-                    pull : false,
-                    nocache : false
-                  },
-                  run : {
-                    create : {
-                      HostConfig : {
-                        NetworkMode : "host"
-                      }
-                    },
-                    start : {},
-                    cmd : []
-                  }
-                }
-              },
-              sparkmaster : {
-                dockerfile : "./images/sparkmaster",
-                tag : "1.6.0",
-                repo : "sparkmaster",
-                options : {
-                  build : {
-                    t : grunt.sensitiveConfig.docker.registry.serveraddress
-                        + "/sparkmaster:" + "1.6.0",
-                    pull : false,
-                    nocache : false
-                  },
-                  run : {
-                    create : {
-                      HostConfig : {
-                        NetworkMode : "host"
-                      }
-                    },
-                    start : {},
-                    cmd : []
-                  }
-                }
-              },
-              sparkslave : {
-                dockerfile : "./images/sparkslave",
-                tag : "1.6.0",
-                repo : "sparkslave",
-                options : {
-                  build : {
-                    t : grunt.sensitiveConfig.docker.registry.serveraddress
-                        + "/sparkslave:" + "1.6.0",
-                    pull : false,
-                    nocache : false
-                  },
-                  run : {
-                    create : {
-                      HostConfig : {
-                        NetworkMode : "host"
-                      }
-                    },
-                    start : {},
-                    cmd : []
-                  }
-                }
-              }
-            }
-          }
-        },
-
-        clouddity : {
-          pkgcloud : grunt.sensitiveConfig.pkgcloud,
-          docker : grunt.sensitiveConfig.docker,
-
-          cluster : "scats",
-
-          nodetypes : [
-              {
-                name : "master",
-                replication : 1,
-                imageRef : "73c6f8d8-f885-4253-8bee-e45da068fb65",
-                flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
-                securitygroups : [ "default", "sparkmasterwebui",
-                    "sparkmaster", "hadoopwebui", "hadoop" ],
-                images : [ "sparkmaster", "hadoopmaster" ],
-                test : [ {
-                  name : "Spark Master WebUI",
-                  protocol : "http",
-                  port : 8080,
-                  path : "/",
-                  shouldContain : "Spark Master at spark:"
-                }, {
-                  name : "HDFS Master WebUI",
-                  protocol : "http",
-                  port : 50070,
-                  path : "/jmx",
-                  query : {
-                    "qry" : "Hadoop:service=NameNode,name=FSNamesystemState"
-                  },
-                  shouldContain : "\"NumLiveDataNodes\" : 5"
-                }, {
-                  name : "Spark ReST service",
-                  protocol : "http",
-                  port : 6066,
-                  shouldContain : "Missing protocol version"
-                } ]
-              },
-              {
-                name : "slave",
-                replication : 4,
-                imageRef : "73c6f8d8-f885-4253-8bee-e45da068fb65",
-                flavorRef : "885227de-b7ee-42af-a209-2f1ff59bc330",
-                securitygroups : [ "default", "sparkslavewebui", "sparkslave",
-                    "hadoopwebui", "hadoop" ],
-                images : [ "sparkslave", "hadoopslave" ],
-                test : [
-                    {
-                      name : "Spark Slave WebUI",
-                      protocol : "http",
-                      port : 8081,
-                      path : "/",
-                      shouldContain : "Spark Worker at"
-                    },
-                    {
-                      name : "Haddop Slave RPC Jon History Server",
-                      protocol : "http",
-                      port : 50020,
-                      shouldContain : "It looks like you are making an HTTP request to a Hadoop IPC port"
-                    } ]
-              } ],
-
-          securitygroups : {
-            "default" : {
-              description : "Opens the Docker demon and SSH ports to dev and cluster nodes",
-              rules : [ {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 22,
-                portRangeMax : 22,
-                remoteIpPrefix : grunt.customConfig.devIPs,
-                remoteIpNodePrefixes : [ "master", "slave" ]
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 2375,
-                portRangeMax : 2375,
-                remoteIpPrefix : grunt.customConfig.devIPs
-              } ]
-            },
-
-            hadoop : {
-              description : "Opens Hadoop and YARN ports to the cluster and dev machines",
-              rules : [ {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 8020,
-                portRangeMax : 8042,
-                remoteIpNodePrefixes : [ "master", "slave" ],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 9000,
-                portRangeMax : 9000,
-                remoteIpNodePrefixes : [ "master", "slave" ],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 50010,
-                portRangeMax : 50105,
-                remoteIpNodePrefixes : [ "master", "slave" ],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, ]
-            },
-
-            hadoopwebui : {
-              description : "Opens Hadoop admin UIs ports to the cluster and dev machines",
-              rules : [ {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 8088,
-                portRangeMax : 8088,
-                remoteIpNodePrefixes : [],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 50070,
-                portRangeMax : 50070,
-                remoteIpNodePrefixes : [],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 50075,
-                portRangeMax : 50075,
-                remoteIpNodePrefixes : [],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 51111,
-                portRangeMax : 51111,
-                remoteIpNodePrefixes : [],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              } ]
-            },
-
-            sparkmasterwebui : {
-              description : "Opens the master web console ports to dev machines",
-              rules : [ {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 4040,
-                portRangeMax : 4040,
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 18080,
-                portRangeMax : 18080,
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 8080,
-                portRangeMax : 8080,
-                remoteIpPrefix : grunt.customConfig.devIPs
-              } ]
-            },
-
-            sparkslavewebui : {
-              description : "Opens the slave web console ports to dev machines",
-              rules : [ {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 4040,
-                portRangeMax : 4040,
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 18080,
-                portRangeMax : 18080,
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 8081,
-                portRangeMax : 8081,
-                remoteIpPrefix : grunt.customConfig.devIPs
-              } ]
-            },
-
-            sparkmaster : {
-              description : "Opens Spark ports to dev machines and the cluster",
-              rules : [ {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 6066,
-                portRangeMax : 6066,
-                remoteIpNodePrefixes : [ "slave" ],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 7077,
-                portRangeMax : 7084,
-                remoteIpNodePrefixes : [ "slave" ],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              } ]
-            },
-
-            sparkslave : {
-              description : "Opens the Spark to the cluster and dev machines",
-              rules : [ {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 7078,
-                portRangeMax : 7084,
-                remoteIpNodePrefixes : [ "master", "slave" ],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              } ]
-            },
-
-            zookeeper : {
-              description : "Opens Hadoop and YARN ports to the cluster and dev machines",
-              rules : [ {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 2181,
-                portRangeMax : 2181,
-                remoteIpNodePrefixes : [ "master", "slave" ],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 2888,
-                portRangeMax : 2888,
-                remoteIpNodePrefixes : [ "master", "slave" ],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              }, {
-                direction : "ingress",
-                ethertype : "IPv4",
-                protocol : "tcp",
-                portRangeMin : 3888,
-                portRangeMax : 3888,
-                remoteIpNodePrefixes : [ "master", "slave" ],
-                remoteIpPrefix : grunt.customConfig.devIPs
-              } ]
-            }
+          after: function () {
+            console.log("End pause");
           }
         }
-      });
+      }
+    },
+
+    dock: {
+      options: {
+        auth: grunt.sensitiveConfig.docker.registry.auth,
+        registry: grunt.sensitiveConfig.docker.registry.serveraddress,
+        // Local docker demon used to send Docker commands to the cluster
+        docker: grunt.sensitiveConfig.docker.master,
+        // Options for the Docker clients on the servers
+        dockerclient: grunt.sensitiveConfig.docker.client,
+        images: {
+          clusternode: {
+            dockerfile: "./images/clusternode",
+            tag: "0.3.0",
+            repo: "clusternode",
+            options: {
+              build: {
+                t: grunt.sensitiveConfig.docker.registry.serveraddress
+                + "/clusternode:" + "0.3.0",
+                pull: false,
+                nocache: false
+              },
+              run: {
+                create: {
+                  name: "clusternode",
+                  ExposedPorts: {
+                    "22/tcp": {}
+                  },
+                  HostConfig: {
+                    PortBindings: {
+                      "22/tcp": [{HostPort: "2022"}]
+                    }
+                  },
+                  start: {},
+                  cmd: []
+                }
+              }
+            }
+          },
+          accumulo_hdfs_master: {
+            dockerfile: "./images/accumulo-hdfs/master",
+            tag: "0.1.0",
+            repo: "accumulo_hdfs_master",
+            options: {
+              build: {
+                t: grunt.sensitiveConfig.docker.registry.serveraddress
+                + "/accumulo_hdfs_master:" + "0.1.0",
+                pull: false,
+                nocache: false
+              },
+              run: {
+                create: {
+                  name: "accumulo_hdfs_master",
+                  HostConfig: {
+                    Binds: ["/mnt/docker:/mnt"],
+                    NetworkMode: "host"
+                  }
+                },
+                start: {},
+                cmd: []
+              }
+            }
+          },
+          accumulo_hdfs_slave: {
+            dockerfile: "./images/accumulo-hdfs/slave",
+            tag: "0.1.0",
+            repo: "accumulo_hdfs_slave",
+            options: {
+              build: {
+                t: grunt.sensitiveConfig.docker.registry.serveraddress
+                + "/accumulo_hdfs_slave:" + "0.1.0",
+                pull: false,
+                nocache: false
+              },
+              run: {
+                create: {
+                  name: "accumulo_hdfs_slave",
+                  HostConfig: {
+                    Binds: ["/mnt/docker:/mnt"],
+                    NetworkMode: "host"
+                  }
+                },
+                start: {},
+                cmd: []
+              }
+            }
+          },
+          sparkmaster: {
+            dockerfile: "./images/spark/sparkmaster",
+            tag: "1.6.1",
+            repo: "sparkmaster",
+            options: {
+              build: {
+                t: grunt.sensitiveConfig.docker.registry.serveraddress
+                + "/sparkmaster:" + "1.6.1",
+                pull: false,
+                nocache: false
+              },
+              run: {
+                create: {
+                  name: "sparkmaster",
+                  HostConfig: {
+                    NetworkMode: "host"
+                  }
+                },
+                start: {},
+                cmd: []
+              }
+            }
+          },
+          sparkslave: {
+            dockerfile: "./images/spark/sparkslave",
+            tag: "1.6.1",
+            repo: "sparkslave",
+            options: {
+              build: {
+                t: grunt.sensitiveConfig.docker.registry.serveraddress
+                + "/sparkslave:" + "1.6.1",
+                pull: false,
+                nocache: false
+              },
+              run: {
+                create: {
+                  name: "sparkslave",
+                  HostConfig: {
+                    NetworkMode: "host"
+                  }
+                },
+                start: {},
+                cmd: []
+              }
+            }
+          }
+        } // End images
+      } // End dock-options
+    }, // End dock
+
+    clouddity: {
+      pkgcloud: grunt.sensitiveConfig.pkgcloud,
+      docker: grunt.sensitiveConfig.docker,
+      cluster: "scats",
+      nodetypes: [
+        {
+          name: "master",
+          replication: 1,
+          imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
+          flavorRef: "885227de-b7ee-42af-a209-2f1ff59bc330",
+          securitygroups: ["default", "sparkmasterwebui",
+            "sparkmaster", "hadoopwebui", "hadoop", "zookeeper", "accumulo"],
+          images: ["sparkmaster", "accumulo_hdfs_master"],
+          test: [
+            {
+              name: "Spark Master WebUI",
+              protocol: "http",
+              port: 8080,
+              path: "/",
+              shouldContain: "Spark Master at spark:"
+            }, {
+              name: "HDFS Master WebUI",
+              protocol: "http",
+              port: 50070,
+              path: "/jmx",
+              query: {
+                "qry": "Hadoop:service=NameNode,name=FSNamesystemState"
+              },
+              shouldContain: "\"NumLiveDataNodes\" : 9"
+            }, {
+              name: "Spark ReST service",
+              protocol: "http",
+              port: 6066,
+              shouldContain: "Missing protocol version"
+            }
+          ]
+        },
+        {
+          name: "slave",
+          replication: 12,
+          imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
+          flavorRef: "885227de-b7ee-42af-a209-2f1ff59bc330",
+          securitygroups: ["default", "sparkslavewebui", "sparkslave",
+            "hadoopwebui", "hadoop", "zookeeper", "accumulo"],
+          images: ["sparkslave", "accumulo_hdfs_slave"],
+          test: [
+            {
+            name: "Spark Slave WebUI",
+            protocol: "http",
+            port: 8081,
+            path: "/",
+            shouldContain: "Spark Worker at"
+            },
+            {
+              name : "Haddop Slave RPC Jon History Server",
+              protocol : "http",
+              port : 50020,
+              shouldContain : "It looks like you are making an HTTP request to a Hadoop IPC port"
+            }
+          ]
+        }
+      ], //End nodetypes
+      securitygroups: {
+        "default": {
+          description: "Opens the Docker demon and SSH ports to dev and cluster nodes",
+          rules: [
+            {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 22,
+              portRangeMax: 22,
+              remoteIpPrefix: grunt.customConfig.devIPs,
+              remoteIpNodePrefixes: ["master", "slave"]
+            }, {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 2375,
+              portRangeMax: 2375,
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }
+          ]
+        },
+        hadoop: {
+          description: "Opens Hadoop and YARN ports to the cluster and dev machines",
+          rules: [
+            {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 8020,
+              portRangeMax: 9000,
+              remoteIpNodePrefixes: ["master", "slave"],
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }, {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 50010,
+              portRangeMax: 50105,
+              remoteIpNodePrefixes: ["master", "slave"],
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }
+          ]
+        },
+        hadoopwebui: {
+          description: "Opens Hadoop admin UIs ports to the cluster and dev machines",
+          rules: [
+            {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 8088,
+              portRangeMax: 8088,
+              remoteIpNodePrefixes: [],
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }, {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 50070,
+              portRangeMax: 51111,
+              remoteIpNodePrefixes: [],
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }
+          ]
+        },
+        sparkmasterwebui: {
+          description: "Opens the master web console ports to dev machines",
+          rules: [
+            {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 4040,
+              portRangeMax: 8080,
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }, {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 18080,
+              portRangeMax: 18080,
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }
+          ]
+        },
+        sparkslavewebui: {
+          description: "Opens the slave web console ports to dev machines",
+          rules: [
+            {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 4040,
+              portRangeMax: 8081,
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }, {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 18080,
+              portRangeMax: 18080,
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }
+          ]
+        },
+        sparkmaster: {
+          description: "Opens Spark ports to dev machines and the cluster",
+          rules: [
+            {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 6066,
+              portRangeMax: 7084,
+              remoteIpNodePrefixes: ["slave"],
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }
+          ]
+        },
+        sparkslave: {
+          description: "Opens the Spark to the cluster and dev machines",
+          rules: [{
+            direction: "ingress",
+            ethertype: "IPv4",
+            protocol: "tcp",
+            portRangeMin: 7078,
+            portRangeMax: 7084,
+            remoteIpNodePrefixes: ["master", "slave"],
+            remoteIpPrefix: grunt.customConfig.devIPs
+          }]
+        },
+        zookeeper: {
+          description: "Opens Hadoop and YARN ports to the cluster and dev machines",
+          rules: [
+            {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 2181,
+              portRangeMax: 3888,
+              remoteIpNodePrefixes: ["master", "slave"],
+              remoteIpPrefix: grunt.customConfig.devIPs
+            }
+          ]
+        },
+        accumulo: {
+          description: "Open Accumulo ports",
+          rules: [
+            {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 1,
+              portRangeMax: 65535,
+              remoteIpNodePrefixes: ["master", "slave"]
+            }
+          ]
+        }
+      } //End securitygroups
+    }, // End clouddity
+  });
 
   // Dependent tasks declarations
   require("load-grunt-tasks")(grunt, {
@@ -436,8 +395,8 @@ module.exports = function(grunt) {
 
   // Provisions the VMs
   grunt.registerTask("launch", [ "clouddity:createsecuritygroups", "wait",
-      "clouddity:createnodes", "wait", "clouddity:updatesecuritygroups",
-      "wait", "clouddity:addhosts" ]);
+    "clouddity:createnodes", "wait", "clouddity:updatesecuritygroups",
+    "wait", "clouddity:addhosts" ]);
 
   // Pulls the Docker images from registry
   grunt.registerTask("pull", [ "clouddity:pull" ]);
@@ -459,10 +418,10 @@ module.exports = function(grunt) {
 
   // Docker containers removal
   grunt
-      .registerTask("remove", [ "clouddity:stop", "wait", "clouddity:remove" ]);
+    .registerTask("remove", [ "clouddity:stop", "wait", "clouddity:remove" ]);
 
   // Destroy the VMs
   grunt.registerTask("destroy", [ "clouddity:destroynodes", "wait",
-      "clouddity:destroysecuritygroups" ]);
+    "clouddity:destroysecuritygroups" ]);
 
 };
