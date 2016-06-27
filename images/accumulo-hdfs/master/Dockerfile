@@ -69,6 +69,8 @@ COPY accumulo-conf/accumulo-site.xml ${ACCUMULO_HOME}/conf/accumulo-site.xml
 # ================== Install GeoMesa =================
 #
 
+RUN cd /tmp && curl -O -s http://115.146.95.30/geomesa-1.2.3/dist/tools/geomesa-tools-1.2.3-bin.tar.gz
+
 # Download geomesa-1.2.2 and place to /opt/geomesa
 #RUN curl -s https://repo.locationtech.org/content/repositories/geomesa-releases/org/locationtech/geomesa/geomesa-dist/${GEOMESA_VERSION}/geomesa-dist-${GEOMESA_VERSION}-bin.tar.gz \
 #    | tar -xz -C /opt
