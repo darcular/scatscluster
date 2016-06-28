@@ -152,6 +152,29 @@ module.exports = function (grunt) {
                 cmd: []
               }
             }
+          },
+          geoserver:{
+            dockerfile: "./images/geoserver",
+            tag: "2.8.4",
+            repo: "geoserver",
+            options: {
+              build: {
+                t: grunt.sensitiveConfig.docker.registry.serveraddress
+                + "/geoserver:" + "2.8.4",
+                pull: false,
+                nocache: false
+              },
+              run: {
+                create: {
+                  name: "geoserver",
+                  HostConfig: {
+                    NetworkMode: "host"
+                  }
+                },
+                start: {},
+                cmd: []
+              }
+            }
           }
         } // End images
       } // End dock-options
@@ -217,6 +240,24 @@ module.exports = function (grunt) {
               shouldContain : "It looks like you are making an HTTP request to a Hadoop IPC port"
             }
           ]
+        },
+        {
+          name: "interface",
+          replication: 1,
+          imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
+          flavorRef: "885227de-b7ee-42af-a209-2f1ff59bc330",
+          securitygroups: ["default", "geoserver_sec"],
+          images: ["geoserver"],
+          test: [
+            {
+              name: "Geoserver WebUI",
+              protocol: "http",
+              port: 8080,
+              path: "/",
+              // TODO: fix test condition
+              shouldContain: ""
+            }
+          ]
         }
       ], //End nodetypes
       securitygroups: {
@@ -230,7 +271,7 @@ module.exports = function (grunt) {
               portRangeMin: 22,
               portRangeMax: 22,
               remoteIpPrefix: grunt.customConfig.devIPs,
-              remoteIpNodePrefixes: ["master", "slave"]
+              remoteIpNodePrefixes: ["master", "slave", "interface"]
             }, {
               direction: "ingress",
               ethertype: "IPv4",
@@ -360,7 +401,7 @@ module.exports = function (grunt) {
               protocol: "tcp",
               portRangeMin: 2181,
               portRangeMax: 3888,
-              remoteIpNodePrefixes: ["master", "slave"],
+              remoteIpNodePrefixes: ["master", "slave", "interface"],
               remoteIpPrefix: grunt.customConfig.devIPs
             }
           ]
@@ -374,7 +415,20 @@ module.exports = function (grunt) {
               protocol: "tcp",
               portRangeMin: 1,
               portRangeMax: 65535,
-              remoteIpNodePrefixes: ["master", "slave"]
+              remoteIpNodePrefixes: ["master", "slave", "interface"]
+            }
+          ]
+        },
+        geoserver_sec: {
+          description: "Open GeoServer to devIps",
+          rules: [
+            {
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 8080,
+              portRangeMax: 8080,
+              remoteIpPrefix: grunt.customConfig.devIPs
             }
           ]
         }

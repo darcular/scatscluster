@@ -3,7 +3,7 @@ FROM 115.146.95.30:5000/clusternode:0.3.0
 ENV HADOOP_VERSION=2.6.4
 ENV ZOOKEEPER_VERSION=3.4.8
 ENV ACCUMULO_VERSION=1.6.5
-ENV GEOMESA_VERSION=1.2.2
+ENV GEOMESA_VERSION=1.2.3
 
 #
 # ================== Install Hadoop =================
@@ -66,17 +66,17 @@ COPY accumulo-conf/accumulo-env.sh ${ACCUMULO_HOME}/conf/accumulo-env.sh
 COPY accumulo-conf/accumulo-site.xml ${ACCUMULO_HOME}/conf/accumulo-site.xml
 
 #
-# ================== Install GeoMesa =================
+# ================== Install GeoMesa CML Tool =================
 #
 
-RUN cd /tmp && curl -O -s http://115.146.95.30/geomesa-1.2.3/dist/tools/geomesa-tools-1.2.3-bin.tar.gz
+# Fixme: GeoMesa's component jar is downloaded from yikai's personal http-file-server.
+RUN curl -s http://115.146.95.30/geomesa-${GEOMESA_VERSION}/dist/tools/geomesa-tools-${GEOMESA_VERSION}-bin.tar.gz \
+    | tar -xz -C /opt
+RUN cd /opt && ln -s ./geomesa-tools-${GEOMESA_VERSION} geomesa-tool
 
-# Download geomesa-1.2.2 and place to /opt/geomesa
-#RUN curl -s https://repo.locationtech.org/content/repositories/geomesa-releases/org/locationtech/geomesa/geomesa-dist/${GEOMESA_VERSION}/geomesa-dist-${GEOMESA_VERSION}-bin.tar.gz \
-#    | tar -xz -C /opt
-#RUN cd /opt && ln -s ./geomesa-${GEOMESA_VERSION} geomesa
-
-
+ENV GEOMESA_HOME /opt/geomesa-tool
+ENV PATH $PATH:${GEOMESA_HOME}/bin
+# Todo If needed, use install-jai.sh and install-jline.sh to install dependencies for shape file support and raster ingest
 
 
 #

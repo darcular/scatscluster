@@ -10,6 +10,11 @@ zookeeper_member=""
 for element in "${nodes_array[@]}"
 do
     IFS=: read -r -a array <<< ${element}
+    # ignore nodes other than master and slave (cause node for geoserver do not have zookeeper)
+    if !([[ ${array[0]} == *master* ]] || [[ ${array[0]} == *slave* ]])
+    then
+        continue
+    fi
     if [ ${host_name} == ${array[0]} ]
     then
         myid=${i}
