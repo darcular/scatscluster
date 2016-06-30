@@ -48,7 +48,8 @@ else
             "${base_url}org/apache/hadoop/hadoop-common/${hadoop_version}/hadoop-common-${hadoop_version}.jar"
             "${base_url}org/apache/hadoop/hadoop-hdfs/${hadoop_version}/hadoop-hdfs-${hadoop_version}.jar"
             "${base_url}commons-logging/commons-logging/${com_log_version}/commons-logging-${com_log_version}.jar"
-            "${base_url}com/google/guava/guava/${guava_version}/guava-${guava_version}.jar"
+            # geoserver has its own guava dependency, install another version will cause err when running in tomcat
+            #"${base_url}com/google/guava/guava/${guava_version}/guava-${guava_version}.jar"
             "${base_url}org/apache/commons/commons-vfs2/${commons_vfs2_version}/commons-vfs2-${commons_vfs2_version}.jar"
             )
 
