@@ -6,7 +6,7 @@
 # FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.3.0
 FROM 115.146.95.30:5000/clusternode:0.3.0
 
-ENV SPARK_VERSION=1.6.1
+ENV SPARK_VERSION=2.0.0
 
 # Installs Spark
 RUN curl -s http://apache.mirror.serversaustralia.com.au/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz | \

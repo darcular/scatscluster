@@ -109,12 +109,12 @@ module.exports = function (grunt) {
           },
           sparkmaster: {
             dockerfile: "./images/spark/sparkmaster",
-            tag: "1.6.1",
+            tag: "2.0.0",
             repo: "sparkmaster",
             options: {
               build: {
                 t: grunt.sensitiveConfig.docker.registry.serveraddress
-                + "/sparkmaster:" + "1.6.1",
+                + "/sparkmaster:" + "2.0.0",
                 pull: false,
                 nocache: false
               },
@@ -122,6 +122,7 @@ module.exports = function (grunt) {
                 create: {
                   name: "sparkmaster",
                   HostConfig: {
+                    Binds: ["/mnt/spark:/tmp"],
                     NetworkMode: "host"
                   }
                 },
@@ -132,12 +133,12 @@ module.exports = function (grunt) {
           },
           sparkslave: {
             dockerfile: "./images/spark/sparkslave",
-            tag: "1.6.1",
+            tag: "2.0.0",
             repo: "sparkslave",
             options: {
               build: {
                 t: grunt.sensitiveConfig.docker.registry.serveraddress
-                + "/sparkslave:" + "1.6.1",
+                + "/sparkslave:" + "2.0.0",
                 pull: false,
                 nocache: false
               },
@@ -145,6 +146,7 @@ module.exports = function (grunt) {
                 create: {
                   name: "sparkslave",
                   HostConfig: {
+                    Binds: ["/mnt/spark:/tmp"], 
                     NetworkMode: "host"
                   }
                 },
@@ -189,7 +191,7 @@ module.exports = function (grunt) {
           name: "master",
           replication: 1,
           imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
-          flavorRef: "885227de-b7ee-42af-a209-2f1ff59bc330",
+          flavorRef: "13000ccd-6a24-4bc5-9520-743707f8c0a2",
           securitygroups: ["default", "sparkmasterwebui",
             "sparkmaster", "hadoopwebui", "hadoop", "zookeeper", "accumulo"],
           images: ["sparkmaster", "accumulo_hdfs_master"],
@@ -221,7 +223,7 @@ module.exports = function (grunt) {
           name: "slave",
           replication: 12,
           imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
-          flavorRef: "885227de-b7ee-42af-a209-2f1ff59bc330",
+          flavorRef: "1",
           securitygroups: ["default", "sparkslavewebui", "sparkslave",
             "hadoopwebui", "hadoop", "zookeeper", "accumulo"],
           images: ["sparkslave", "accumulo_hdfs_slave"],
