@@ -21,7 +21,10 @@ echo "spark.io.compression.codec lzf" >> ${SPARK_CONF_FILE}
 export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=${SPARK_HISTORY_WEBUI_PORT} \
   -Dspark.history.fs.logDirectory=file://${SPARK_EVENT_HOME}/ \
   -Dspark.io.compression.codec=lzf -Dspark.eventLog.enabled=true \
-  -Dspark.eventLog.dir=file://${SPARK_EVENT_HOME}/"
+  -Dspark.eventLog.dir=file://${SPARK_EVENT_HOME}/ \
+  -Dspark.history.fs.cleaner.enabled=true \
+  -Dspark.history.fs.cleaner.maxAge=2d"
+
 
 ${SPARK_HOME}/sbin/start-master.sh
 ${SPARK_HOME}/sbin/start-history-server.sh

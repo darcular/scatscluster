@@ -221,7 +221,7 @@ module.exports = function (grunt) {
         },
         {
           name: "slave",
-          replication: 12,
+          replication: 13,
           imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
           flavorRef: "1",
           securitygroups: ["default", "sparkslavewebui", "sparkslave",
@@ -293,7 +293,7 @@ module.exports = function (grunt) {
               protocol: "tcp",
               portRangeMin: 8020,
               portRangeMax: 9000,
-              remoteIpNodePrefixes: ["master", "slave"],
+              // remoteIpNodePrefixes: ["master", "slave"],
               remoteIpPrefix: grunt.customConfig.devIPs
             }, {
               direction: "ingress",
@@ -301,7 +301,7 @@ module.exports = function (grunt) {
               protocol: "tcp",
               portRangeMin: 50010,
               portRangeMax: 50105,
-              remoteIpNodePrefixes: ["master", "slave"],
+              // remoteIpNodePrefixes: ["master", "slave"],
               remoteIpPrefix: grunt.customConfig.devIPs
             }
           ]
@@ -390,7 +390,7 @@ module.exports = function (grunt) {
             protocol: "tcp",
             portRangeMin: 7078,
             portRangeMax: 7084,
-            remoteIpNodePrefixes: ["master", "slave"],
+            // remoteIpNodePrefixes: ["master", "slave"],
             remoteIpPrefix: grunt.customConfig.devIPs
           }]
         },
@@ -398,13 +398,13 @@ module.exports = function (grunt) {
           description: "Opens Hadoop and YARN ports to the cluster and dev machines",
           rules: [
             {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 2181,
-              portRangeMax: 3888,
-              remoteIpNodePrefixes: ["master", "slave", "interface"],
-              remoteIpPrefix: grunt.customConfig.devIPs
+              // direction: "ingress",
+              // ethertype: "IPv4",
+              // protocol: "tcp",
+              // portRangeMin: 2181,
+              // portRangeMax: 3888,
+              // remoteIpNodePrefixes: ["master", "slave", "interface"],
+              // remoteIpPrefix: grunt.customConfig.devIPs
             }
           ]
         },

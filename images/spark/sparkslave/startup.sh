@@ -21,7 +21,14 @@ echo "spark.io.compression.codec lzf" >> ${SPARK_CONF_FILE}
 export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=${SPARK_HISTORY_WEBUI_PORT} \
   -Dspark.history.fs.logDirectory=file://${SPARK_EVENT_HOME}/ \
   -Dspark.io.compression.codec=lzf -Dspark.eventLog.enabled=true \
-  -Dspark.eventLog.dir=file://${SPARK_EVENT_HOME}/"
+  -Dspark.eventLog.dir=file://${SPARK_EVENT_HOME}/ \
+  -Dspark.history.fs.cleaner.enabled=true \
+  -Dspark.history.fs.cleaner.maxAge=2d"
+
+# CleanUp worker dir very 12h
+export SPARK_WORKER_OPTS="-Dspark.worker.cleanup.enabled=true -Dspark.worker.cleanup.appDataTtl=43200"
+
+export SPARK_WORKER_MEMORY="4G"
   
 ${SPARK_HOME}/sbin/start-slave.sh spark://${SPARK_MASTER_IP}:${SPARK_MASTER_PORT}
 ${SPARK_HOME}/sbin/start-history-server.sh

@@ -26,6 +26,18 @@ RUN curl -O http://jaist.dl.sourceforge.net/project/geoserver/GeoServer/${GEOSER
     && rm -r ${TOMCAT_HOME}/webapps/docs \
     && rm -r ${TOMCAT_HOME}/webapps/host-manager
 
+# Install JAI and ImageIO for GeoServer
+RUN curl -s http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz \
+    | tar -xz -C /opt \
+    && cp /opt/jai-1_1_3/lib/*.jar ${JAVA_HOME}/jre/lib/ext/ \
+    && cp /opt/jai-1_1_3/lib/*.so ${JAVA_HOME}/jre/lib/amd64/ \
+    && rm -r /opt/jai-1_1_3
+RUN curl http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-amd64.tar.gz \
+    | tar -xz -C /opt \
+    && cp /opt/jai_imageio-1_1/lib/*.jar  ${JAVA_HOME}/jre/lib/ext/ \
+    && cp /opt/jai_imageio-1_1/lib/*.so ${JAVA_HOME}/jre/lib/amd64/ \
+    && rm -r /opt/jai_imageio-1_1
+
 ENV PATH ${PATH}:${TOMCAT_HOME}/bin
 ENV GEOSERVER_HOME ${TOMCAT_HOME}/webapps/geoserver
 ENV GEOSERVER_PLUGIN_LIB ${GEOSERVER_HOME}/WEB-INF/lib/
