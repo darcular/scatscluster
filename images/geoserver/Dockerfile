@@ -8,9 +8,9 @@ ENV ACCUMULO_VERSION=1.6.5
 ENV GEOMESA_VERSION=1.2.3
 
 # Install Tomcat 8
-RUN curl -s http://apache.mirror.serversaustralia.com.au/tomcat/tomcat-8/v8.0.36/bin/apache-tomcat-8.0.36.tar.gz \
+RUN curl -s http://apache.mirror.digitalpacific.com.au/tomcat/tomcat-8/v8.0.39/bin/apache-tomcat-8.0.39.tar.gz \
     | tar -xz -C /opt
-RUN cd /opt && ln -s ./apache-tomcat-8.0.36 tomcat
+RUN cd /opt && ln -s ./apache-tomcat-8.0.39 tomcat
 ENV TOMCAT_HOME /opt/tomcat
 
 # Install GeoServer war into GEOSERVER_HOME and remove un-used tmp fils and webapps

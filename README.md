@@ -15,7 +15,7 @@ If, during the test of the Hadoop and Spark installation, the connection is refu
 * Install npm
 * Install Grunt (`npm install -g grunt-cli`)
 * Install Docker
-* Start the Docker daemon (`docker -d -H localhost:2375`, or set `DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"` in `/etc/default/docker`
+* Start the Docker daemon (`docker -d -H localhost:2375`, or set `DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"` in `/etc/default/docker` (http://stackoverflow.com/questions/30127580/docker-opts-in-etc-default-docker-ignored)
 * Install the Node.js modules with: `npm install` 
 * Create a file named `sensitive.json` containing all the credentials to access the NeCTAR cloud (see `sensitive.json.template`). The `user_data` property is not to be changed (it installs Docker on the provisioned nodes), nor it is to be changed the `docker.registry` property (it is already set for a public Docker registry).
 

@@ -16,6 +16,12 @@ COPY sshconf/* /etc/ssh/
 COPY dotssh/* /root/.ssh/
 RUN chmod -R 600 /etc/ssh && chmod -R 600 /root/.ssh
 
+# Setup local specific information for encoding
+RUN locale-gen en_AU.utf8
+ENV LANG en_AU.utf8
+ENV LANGUAGE en_AU.utf8
+ENV LC_ALL en_AU.utf8
+
 ENTRYPOINT service ssh start && tail -f /dev/null
 
 EXPOSE 22

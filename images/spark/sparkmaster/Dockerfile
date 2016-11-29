@@ -9,7 +9,7 @@ FROM 115.146.95.30:5000/clusternode:0.3.0
 ENV SPARK_VERSION=2.0.0
 
 # Installs Spark
-RUN curl -s http://apache.mirror.serversaustralia.com.au/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz | \
+RUN curl -s http://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz | \
     tar -xz -C /usr/local/
 RUN cd /usr/local && ln -s ./spark-${SPARK_VERSION}-bin-hadoop2.6 spark
 

@@ -52,7 +52,7 @@ RUN sed -i '/^dataDir=.*/c\dataDir='${ZOOKEEPER_DATA_DIR} ${ZOOKEEPER_HOME}/conf
 #
 
 # Download accumulo-1.6.5 and place to /opt/accumulo
-RUN curl -s http://apache.mirror.serversaustralia.com.au/accumulo/${ACCUMULO_VERSION}/accumulo-${ACCUMULO_VERSION}-bin.tar.gz \
+RUN curl -s https://archive.apache.org/dist/accumulo/${ACCUMULO_VERSION}/accumulo-${ACCUMULO_VERSION}-bin.tar.gz \
     | tar -xz -C /opt
 RUN cd /opt && ln -s ./accumulo-${ACCUMULO_VERSION} accumulo
 
