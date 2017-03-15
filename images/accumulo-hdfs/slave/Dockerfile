@@ -3,7 +3,7 @@ FROM 115.146.95.30:5000/clusternode:0.3.0
 ENV HADOOP_VERSION=2.6.4
 ENV ZOOKEEPER_VERSION=3.4.8
 ENV ACCUMULO_VERSION=1.6.5
-ENV GEOMESA_VERSION=1.2.3
+ENV GEOMESA_VERSION=1.3.1
 
 #
 # ================== Install Hadoop =================
@@ -68,7 +68,7 @@ COPY accumulo-conf/accumulo-site.xml ${ACCUMULO_HOME}/conf/accumulo-site.xml
 #
 
 # Fixme: GeoMesa's component jar is downloaded from yikai's personal http-file-server.
-RUN cd $ACCUMULO_HOME/lib/ext && curl -O -s http://115.146.95.30/geomesa-${GEOMESA_VERSION}/dist/accumulo/geomesa-accumulo-distributed-runtime-${GEOMESA_VERSION}.jar
+RUN cd $ACCUMULO_HOME/lib/ext && curl -O -s http://115.146.95.30/geomesa-${GEOMESA_VERSION}/dist/accumulo/geomesa-accumulo-distributed-runtime_2.11-${GEOMESA_VERSION}.jar
 
 #
 # ================== Install Startup Script =================

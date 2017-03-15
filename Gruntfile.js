@@ -157,12 +157,12 @@ module.exports = function (grunt) {
           },
           geoserver:{
             dockerfile: "./images/geoserver",
-            tag: "2.8.4",
+            tag: "2.9.4",
             repo: "geoserver",
             options: {
               build: {
                 t: grunt.sensitiveConfig.docker.registry.serveraddress
-                + "/geoserver:" + "2.8.4",
+                + "/geoserver:" + "2.9.4",
                 pull: false,
                 nocache: false
               },
