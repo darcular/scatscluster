@@ -52,7 +52,7 @@ hadoop-daemon.sh --config ${HADOOP_CONF_DIR} --script hdfs start secondarynameno
 # Start data node
 hadoop-daemon.sh --config ${HADOOP_CONF_DIR} --script hdfs start datanode
 # Wait until hdfs is ready (running)
-while hdfs dfsadmin -safemode wait | grep ON
+until hdfs dfsadmin -safemode wait | grep "Safe mode is OFF"
 do
     sleep 5s
 done
@@ -65,7 +65,7 @@ sed -i -e "s/localhost:2181/${zookeeper_servers_str}/g" ${ACCUMULO_HOME}/conf/ac
 
 # Initiate data dir, input instance_name/pwd/pwd_confirm
 # Will abort if directory has already been initiated
-printf 'scats\nscats\nscats\n' | accumulo init
+printf 'smash\nsmash\nsmash\n' | accumulo init
 
 ${ACCUMULO_HOME}/bin/start-server.sh ${host_name} gc
 ${ACCUMULO_HOME}/bin/start-server.sh ${host_name} tracer

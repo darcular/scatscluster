@@ -15,7 +15,7 @@ accumulo_version="${ACCUMULO_VERSION}"
 hadoop_version="${HADOOP_VERSION}"
 zookeeper_version="${ZOOKEEPER_VERSION}"
 # FIXME: RPC framework has not been used in current architecture. Hard code version 0.9 is compatible to hadoop 2.6
-thrift_version="0.9.1"
+thrift_version="0.9.3"
 
 # for hadoop 2.5 and 2.6 to work we need these
 guava_version="11.0.2"

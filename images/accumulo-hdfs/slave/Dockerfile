@@ -2,7 +2,7 @@ FROM 115.146.95.30:5000/clusternode:0.3.0
 
 ENV HADOOP_VERSION=2.6.4
 ENV ZOOKEEPER_VERSION=3.4.8
-ENV ACCUMULO_VERSION=1.6.5
+ENV ACCUMULO_VERSION=1.8.1
 ENV GEOMESA_VERSION=1.3.1
 
 #
@@ -59,9 +59,9 @@ ENV ACCUMULO_HOME /opt/accumulo
 ENV PATH ${PATH}:${ACCUMULO_HOME}/bin
 
 RUN cp ${ACCUMULO_HOME}/conf/examples/2GB/standalone/* ${ACCUMULO_HOME}/conf/
-COPY accumulo-conf/masters ${ACCUMULO_HOME}/conf/masters
-COPY accumulo-conf/accumulo-env.sh ${ACCUMULO_HOME}/conf/accumulo-env.sh
-COPY accumulo-conf/accumulo-site.xml ${ACCUMULO_HOME}/conf/accumulo-site.xml
+COPY accumulo-conf/1.8/masters ${ACCUMULO_HOME}/conf/masters
+COPY accumulo-conf/1.8/accumulo-env.sh ${ACCUMULO_HOME}/conf/accumulo-env.sh
+COPY accumulo-conf/1.8/accumulo-site.xml ${ACCUMULO_HOME}/conf/accumulo-site.xml
 
 #
 # ================== Install GeoMesa Distributed Runtime =================

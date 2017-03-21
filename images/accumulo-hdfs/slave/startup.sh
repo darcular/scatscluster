@@ -34,7 +34,7 @@ zkServer.sh start
 hadoop-daemon.sh --config ${HADOOP_CONF_DIR} --script hdfs start datanode
 echo "Start waiting for hdfs namenode ready"
 # Fixme hard code
-while hdfs dfsadmin -fs hdfs://scats-1-master:9000/ -safemode wait | grep ON
+until hdfs dfsadmin -fs hdfs://scats-1-master:9000/ -safemode wait | grep "Safe mode is OFF"
 do
     sleep 5s
 done
