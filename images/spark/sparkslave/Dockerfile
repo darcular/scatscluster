@@ -6,7 +6,7 @@
 # FROM cuttlefish.eresearch.unimelb.edu.au/clusternode:0.3.0
 FROM 115.146.95.30:5000/clusternode:0.3.0
 
-ENV SPARK_VERSION=2.0.0
+ENV SPARK_VERSION=2.1.1
 
 # ============== Install Application Binary ==============
 # Installs Spark
