@@ -31,3 +31,5 @@ sensitive.json
 /hadoop-fragment.json
 
 /images/hadoop/
+/images/spark/sparkmaster/extraJars/
+/images/spark/sparkslave/extraJars/

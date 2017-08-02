@@ -28,6 +28,9 @@ cp ${ZOOKEEPER_HOME}/conf/zoo_sample.cfg ${ZOOKEEPER_HOME}/conf/zoo.cfg
 echo ${zookeeper_member} >> ${ZOOKEEPER_HOME}/conf/zoo.cfg
 mkdir -p ${ZOOKEEPER_DATA_DIR}
 echo ${myid} > ${ZOOKEEPER_DATA_DIR}/myid
+# Setup super user authentication for ZK
+# root:smash->root:4bP/nXKOqVzdX7ZA75ZY9S2N2yU=
+export SERVER_JVMFLAGS=-Dzookeeper.DigestAuthenticationProvider.superDigest=root:4bP/nXKOqVzdX7ZA75ZY9S2N2yU=
 zkServer.sh start
 
 # ============= Start hadoop slave =============

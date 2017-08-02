@@ -5,12 +5,12 @@ ENV GEOSERVER_VERSION 2.9.4
 ENV HADOOP_VERSION=2.6.4
 ENV ZOOKEEPER_VERSION=3.4.8
 ENV ACCUMULO_VERSION=1.8.1
-ENV GEOMESA_VERSION=1.3.1
+ENV GEOMESA_VERSION=1.3.2
 
 # Install Tomcat 8
-RUN curl -s http://apache.mirror.digitalpacific.com.au/tomcat/tomcat-8/v8.0.41/bin/apache-tomcat-8.0.41.tar.gz \
+RUN curl -s http://apache.mirror.digitalpacific.com.au/tomcat/tomcat-8/v8.0.45/bin/apache-tomcat-8.0.45.tar.gz \
     | tar -xz -C /opt
-RUN cd /opt && ln -s ./apache-tomcat-8.0.41 tomcat
+RUN cd /opt && ln -s ./apache-tomcat-8.0.45 tomcat
 ENV TOMCAT_HOME /opt/tomcat
 
 # Install GeoServer war into GEOSERVER_HOME and remove un-used tmp fils and webapps
