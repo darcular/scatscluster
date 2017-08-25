@@ -15,9 +15,10 @@
     "grunt-wait": "^0.1.0",
     "load-grunt-tasks": "~3.3.0",
     "grunt-dock": "git+https://github.com/lmoran/grunt-dock.git#master",
-    "grunt-clouddity": "git+https://github.com/lmoran/grunt-clouddity.git#master"
+    "grunt-clouddity": "git+https://github.com/project-rhd/grunt-clouddity.git#dev"
   },
   "optionalDependenciesRepo": {
-    "grunt-clouddity": "git+https://github.com/project-rhd/grunt-clouddity.git#dev"
+    "grunt-clouddity-luca": "git+https://github.com/lmoran/grunt-clouddity.git#master",
+    "grunt-clouddity-yikai": "git+https://github.com/project-rhd/grunt-clouddity.git#dev"
   }
 }

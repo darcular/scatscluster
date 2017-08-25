@@ -29,6 +29,6 @@ RUN chmod a+x ${SPARK_HOME}/sbin/*.sh
 
 #COPY extraJars ${SPARK_HOME}/jars
 
-ENTRYPOINT ${SPARK_HOME}/sbin/startup.sh && tail -f /dev/null
+ENTRYPOINT ["/usr/local/spark/sbin/startup.sh"]
 
 EXPOSE 22 4040 6066 7077 8080 18080 7079 7080 7081 7082 7083

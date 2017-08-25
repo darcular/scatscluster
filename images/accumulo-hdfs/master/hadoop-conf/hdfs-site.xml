@@ -25,4 +25,16 @@
         <name>dfs.namenode.checkpoint.dir</name>
         <value>/mnt/hadoop/dfs/namesecondary</value>
     </property>
+
+    <!--Avoid losing data on power outage -->
+    <property>
+        <name>dfs.datanode.synconclose</name>
+        <value>true</value>
+    </property>
+    <!--Instruct the OS to enqueue all written data to disk
+    immediately after it is written.-->
+    <property>
+        <name>dfs.datanode.sync.behind.writes</name>
+        <value>true</value>
+    </property>
 </configuration>

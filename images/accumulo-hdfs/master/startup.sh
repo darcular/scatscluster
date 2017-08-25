@@ -1,7 +1,34 @@
 #! /bin/bash
+#set -x
 
 export USER=root
+export ACCUMULO_PID_DIR=${ACCUMULO_HOME}/run
+export ACCUMULO_IDENT_STRING=root
+
 host_name=$(hostname)
+
+# SIGTERM-handler
+term_handler() {
+    echo "term_handler trapped"
+#    sleep 2s
+    # Stops Accumulo services locally
+    for signal in TERM KILL; do
+        for svc in tserver gc master monitor tracer; do
+            "$ACCUMULO_HOME"/bin/stop-server.sh "$host_name" "$ACCUMULO_HOME/lib/accumulo-start.jar" $svc $signal
+        done
+    done
+    # Stops HDFS services locally
+    for svc in datanode secondarynamenode namenode; do
+        hadoop-daemon.sh --config ${HADOOP_CONF_DIR} --script hdfs stop ${svc}
+    done
+    # Stop ZooKeeper locally
+    zkServer.sh stop
+
+    exit 143; # 128 + 15 -- SIGTERM
+}
+
+trap "term_handler" HUP INT QUIT TERM
+
 
 # ============= Start zookeeper =============
 IFS=, nodes_array=(${CLUSTER_NODES_LIST})
@@ -75,7 +102,7 @@ ${ACCUMULO_HOME}/bin/start-server.sh ${host_name} tracer
 ${ACCUMULO_HOME}/bin/start-server.sh ${host_name} monitor
 ${ACCUMULO_HOME}/bin/start-server.sh ${host_name} master
 
-
 # Keep process alive
-tail -f /dev/null
+tail -f /dev/null & wait ${!}
+
 
