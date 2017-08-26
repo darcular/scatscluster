@@ -15,14 +15,10 @@ term_handler() {
 
 trap "term_handler" HUP INT QUIT TERM
 
-# Check GEOSERVER_DATA_DIR, use default if not provided
-if [ -z ${GEOSERVER_DATA_DIR} ]; then
-    if [ ! -r ${GEOSERVER_HOME}/data ]; then
-        mkdir -p ${GEOSERVER_HOME}/data
-    fi
-	export GEOSERVER_DATA_DIR=${GEOSERVER_HOME}/data
+export GEOSERVER_DATA_DIR=/mnt/data
+if [ ! -d $GEOSERVER_DATA_DIR ]; then
+    mkdir -p $GEOSERVER_DATA_DIR
 fi
-
 echo "GEOSERVER DATA DIR is $GEOSERVER_DATA_DIR"
 
 export CATALINA_OPTS="$CATALINA_OPTS -Xms4096m"

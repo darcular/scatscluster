@@ -170,6 +170,7 @@ module.exports = function (grunt) {
                 create: {
                   name: "geoserver",
                   HostConfig: {
+                    Binds: ["/mnt/docker/geoserver:/mnt"],
                     NetworkMode: "host"
                   }
                 },

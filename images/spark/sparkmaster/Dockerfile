@@ -27,7 +27,7 @@ COPY startup.sh ${SPARK_HOME}/sbin
 RUN chmod a+x ${SPARK_HOME}/bin/*.sh 
 RUN chmod a+x ${SPARK_HOME}/sbin/*.sh
 
-#COPY extraJars ${SPARK_HOME}/jars
+COPY extraJars ${SPARK_HOME}/jars
 
 ENTRYPOINT ["/usr/local/spark/sbin/startup.sh"]
 
