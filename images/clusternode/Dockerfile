@@ -6,7 +6,7 @@ FROM ubuntu:16.04
 
 # Installs dev tools and Java 8
 RUN apt-get update && apt-get install -y software-properties-common python3-software-properties \
-  openssh-server openssh-client \
+  openssh-server openssh-client locales \
   curl tar sudo telnet net-tools vim openjdk-8-jre unzip
   
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
@@ -17,10 +17,10 @@ COPY dotssh/* /root/.ssh/
 RUN chmod -R 600 /etc/ssh && chmod -R 600 /root/.ssh
 
 # Setup local specific information for encoding
-RUN locale-gen en_AU.utf8
-ENV LANG en_AU.utf8
-ENV LANGUAGE en_AU.utf8
-ENV LC_ALL en_AU.utf8
+RUN locale-gen "en_AU.UTF-8"
+ENV LANG="en_AU.UTF-8"
+ENV LANGUAGE="en_AU:en"
+ENV LC_ALL="en_AU.UTF-8"
 
 ENTRYPOINT service ssh start && tail -f /dev/null
 
