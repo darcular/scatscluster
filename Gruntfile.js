@@ -178,6 +178,30 @@ module.exports = function (grunt) {
                 cmd: []
               }
             }
+          },
+          kafka:{
+            dockerfile: "./images/kafka",
+            tag: "0.11.0",
+            repo: "kafka",
+            options: {
+              build: {
+                t: grunt.sensitiveConfig.docker.registry.serveraddress
+                + "/kafka:" + "0.11.0",
+                pull: false,
+                nocache: false
+              },
+              run: {
+                create: {
+                  name: "kafka",
+                  HostConfig: {
+                    Binds: [],
+                    NetworkMode: "host"
+                  }
+                },
+                start: {},
+                cmd: []
+              }
+            }
           }
         } // End images
       } // End dock-options
@@ -250,7 +274,7 @@ module.exports = function (grunt) {
           imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
           flavorRef: "885227de-b7ee-42af-a209-2f1ff59bc330",
           securitygroups: ["default", "geoserver_sec"],
-          images: ["geoserver"],
+          images: ["geoserver", "kafka"],
           test: [
             {
               name: "Geoserver WebUI",

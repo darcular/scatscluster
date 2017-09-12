@@ -29,8 +29,16 @@ export CATALINA_OPTS="$CATALINA_OPTS -Duser.timezone=UTC"
 export CATALINA_OPTS="$CATALINA_OPTS -Djava.awt.headless=true"
 export CATALINA_OPTS="$CATALINA_OPTS -Djava.security.egd=file:/dev/./urandom"
 
-catalina.sh start &
-#pid="$!"
+# Fixme: Need a better way to detect if the table in Accumulo is ready to query.
+# test the master node only is not enough. Suggest install GeoMesa CLI in this image
+# and use it for testing the readiness
+#until </dev/tcp/scats-1-master/9999
+#do
+#  sleep 2s
+#done
+catalina.sh start
+
+#catalina.sh run
 
 # Keep process alive
 tail -f /dev/null & wait ${!}

@@ -8,7 +8,7 @@ ENV ACCUMULO_VERSION=1.8.1
 ENV GEOMESA_VERSION=1.3.2
 
 # Install Tomcat 8
-RUN curl -s http://apache.mirror.digitalpacific.com.au/tomcat/tomcat-8/v8.0.45/bin/apache-tomcat-8.0.45.tar.gz \
+RUN curl -s http://115.146.95.30/tomcat-8/apache-tomcat-8.0.45.tar.gz \
     | tar -xz -C /opt
 RUN cd /opt && ln -s ./apache-tomcat-8.0.45 tomcat
 ENV TOMCAT_HOME /opt/tomcat
