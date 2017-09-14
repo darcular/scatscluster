@@ -1,7 +1,6 @@
 FROM 115.146.95.30:5000/clusternode:0.3.0
 
 ENV HADOOP_VERSION=2.6.4
-ENV ZOOKEEPER_VERSION=3.4.8
 ENV ACCUMULO_VERSION=1.8.1
 ENV GEOMESA_VERSION=1.3.2
 
@@ -27,25 +26,6 @@ ENV PATH ${PATH}:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin
 COPY hadoop-conf/hdfs-site.xml ${HADOOP_CONF_DIR}/hdfs-site.xml
 COPY hadoop-conf/core-site.xml ${HADOOP_CONF_DIR}/core-site.xml
 # name node are initiated in startup.sh
-
-#
-# ================== Install Zookeeper =================
-#
-
-# Download zookeeper-3.4.8 and place to /opt/zookeeper
-RUN curl -s http://apache.mirror.serversaustralia.com.au/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
-    | tar -xz -C /opt
-RUN cd /opt && ln -s ./zookeeper-${ZOOKEEPER_VERSION} zookeeper
-
-# Set environment for zoopkeeper
-ENV ZOOKEEPER_HOME /opt/zookeeper
-ENV PATH ${PATH}:${ZOOKEEPER_HOME}/bin
-ENV ZOOKEEPER_DATA_DIR=/mnt/zookeeper/data
-
-# Copy setting files into image from project for zookeeper
-COPY zookeeper-conf/zoo_sample.cfg ${ZOOKEEPER_HOME}/conf/zoo_sample.cfg
-RUN sed -i '/^dataDir=.*/c\dataDir='${ZOOKEEPER_DATA_DIR} ${ZOOKEEPER_HOME}/conf/zoo_sample.cfg
-# TODO: redirect zookeeper log base. Data dir may need to be mounted
 
 #
 # ================== Install Accumulo =================
