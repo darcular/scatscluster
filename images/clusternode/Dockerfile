@@ -28,7 +28,7 @@ ENV LC_ALL="en_AU.UTF-8"
 
 ENV ZOOKEEPER_VERSION=3.4.10
 
-# Download zookeeper-3.4.8 and place to /opt/zookeeper
+# Download zookeeper and place to /opt/zookeeper
 RUN curl -s http://apache.mirror.serversaustralia.com.au/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
     | tar -xz -C /opt
 RUN cd /opt && ln -s ./zookeeper-${ZOOKEEPER_VERSION} zookeeper

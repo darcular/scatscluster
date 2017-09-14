@@ -10,9 +10,9 @@ ENV SPARK_VERSION=2.1.1
 
 # ============== Install Application Binary ==============
 # Installs Spark
-RUN curl -s http://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.6.tgz | \
+RUN curl -s http://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz | \
     tar -xz -C /usr/local/
-RUN cd /usr/local && ln -s ./spark-${SPARK_VERSION}-bin-hadoop2.6 spark
+RUN cd /usr/local && ln -s ./spark-${SPARK_VERSION}-bin-hadoop2.7 spark
 ENV SPARK_HOME=/usr/local/spark
 ENV PATH=${PATH}:${SPARK_HOME}/bin:${SPARK_HOME}/sbin
 
