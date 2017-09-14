@@ -34,20 +34,22 @@ trap "term_handler" HUP INT QUIT TERM
 IFS=, nodes_array=(${CLUSTER_NODES_LIST})
 i=1
 zookeeper_member=""
+accumulo_zookeeper_list=()
 for element in "${nodes_array[@]}"
 do
     IFS=: read -r -a array <<< ${element}
-    # ignore nodes other than master and slave (cause node for geoserver do not have zookeeper)
-    if !([[ ${array[0]} == *master* ]] || [[ ${array[0]} == *slave* ]])
+    zookeeper_member+="server.$i=${array[0]}:2888:3888"$'\n'
+
+    # prepare ZK list for accumulo
+    if ([[ ${array[0]} == *master* ]] || [[ ${array[0]} == *slave* ]])
     then
-        continue
+        accumulo_zookeeper_list+=(${array[0]}:2181)
     fi
+    # Generate unique ID for each host by traverse the all host address in an identical order
     if [ ${host_name} == ${array[0]} ]
     then
         myid=${i}
     fi
-    zookeeper_member+="server.$i=${array[0]}:2888:3888"$'\n'
-    zookeeper_server_list[$i]=${array[0]}:2181
     i=$((i+1))
 done
 
@@ -90,7 +92,7 @@ done
 # ============= Start accumulo master =============
 
 # Update instance.zookeeper.host
-zookeeper_servers_str=$( IFS=$','; echo "${zookeeper_server_list[*]}" )
+zookeeper_servers_str=$( IFS=$','; echo "${accumulo_zookeeper_list[*]}" )
 sed -i -e "s/localhost:2181/${zookeeper_servers_str}/g" ${ACCUMULO_HOME}/conf/accumulo-site.xml
 
 # Initiate data dir, input instance_name/pwd/pwd_confirm
