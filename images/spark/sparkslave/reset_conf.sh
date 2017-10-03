@@ -21,21 +21,18 @@ SPARK_MASTER_WEBUI_PORT=8080
 SPARK_WORKER_PORT=7078
 SPARK_WORKER_WEBUI_PORT=8081
 SPARK_WORKER_MEMORY="4G"
-SPARK_WORKER_OPTS="-Dspark.worker.cleanup.enabled=true \
+SPARK_WORKER_OPTS="\"-Dspark.worker.cleanup.enabled=true \
    -Dspark.worker.cleanup.interval=900 \
-   -Dspark.worker.cleanup.appDataTtl=7200 \
-   -Dspark.worker.ui.retainedExecutors=10 \
-   -Dspark.worker.ui.retainedDrivers=10"
+   -Dspark.worker.cleanup.appDataTtl=7200\""
 
 # History-Daemon settings for Standalone mode
 SPARK_HISTORY_WEBUI_PORT=18080
-SPARK_HISTORY_OPTS="-Dspark.history.ui.port=${SPARK_HISTORY_WEBUI_PORT} \
-  -Dspark.io.compression.codec=lz4 \
+SPARK_HISTORY_OPTS="\"-Dspark.history.ui.port=${SPARK_HISTORY_WEBUI_PORT} \
   -Dspark.eventLog.enabled=true \
   -Dspark.eventLog.dir=file://${SPARK_EVENT_HOME}/ \
   -Dspark.history.fs.logDirectory=file://${SPARK_EVENT_HOME}/ \
   -Dspark.history.fs.cleaner.enabled=true \
-  -Dspark.history.fs.cleaner.maxAge=2d"
+  -Dspark.history.fs.cleaner.maxAge=2d\""
 
 # ============= Settings End ==============
 

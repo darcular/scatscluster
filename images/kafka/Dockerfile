@@ -12,14 +12,9 @@ RUN curl -s http://115.146.95.30/kafka/kafka_2.11-0.11.0.0.tgz \
     | tar -xz -C /opt
 RUN cd /opt && ln -s ./kafka_2.11-0.11.0.0 kafka
 ENV KAFKA_HOME /opt/kafka
-
-
-
 ENV PATH ${PATH}:${KAFKA_HOME}/bin
 
-
-#TODO Add config files instead of default settings
-
+COPY kafka-conf/server.properties ${KAFKA_HOME}/config/server.properties
 
 COPY startup.sh /opt/startup.sh
 RUN chmod +x /opt/startup.sh

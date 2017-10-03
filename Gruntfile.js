@@ -194,7 +194,7 @@ module.exports = function (grunt) {
                 create: {
                   name: "kafka",
                   HostConfig: {
-                    Binds: [],
+                    Binds: ["/mnt/docker/kafka:/mnt"],
                     NetworkMode: "host"
                   }
                 },
@@ -273,7 +273,7 @@ module.exports = function (grunt) {
           replication: 1,
           imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
           flavorRef: "885227de-b7ee-42af-a209-2f1ff59bc330",
-          securitygroups: ["default", "geoserver_sec"],
+          securitygroups: ["default", "geoserver_sec", "accumulo", "zookeeper"],
           images: ["geoserver", "kafka"],
           test: [
             {
@@ -423,13 +423,12 @@ module.exports = function (grunt) {
           description: "Opens Hadoop and YARN ports to the cluster and dev machines",
           rules: [
             {
-              // direction: "ingress",
-              // ethertype: "IPv4",
-              // protocol: "tcp",
-              // portRangeMin: 2181,
-              // portRangeMax: 3888,
-              // remoteIpNodePrefixes: ["master", "slave", "interface"],
-              // remoteIpPrefix: grunt.customConfig.devIPs
+              direction: "ingress",
+              ethertype: "IPv4",
+              protocol: "tcp",
+              portRangeMin: 2181,
+              portRangeMax: 3888,
+              remoteIpPrefix: grunt.customConfig.devIPs
             }
           ]
         },
