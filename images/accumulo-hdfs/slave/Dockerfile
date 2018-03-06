@@ -39,7 +39,7 @@ RUN cd /opt && ln -s ./accumulo-${ACCUMULO_VERSION} accumulo
 ENV ACCUMULO_HOME /opt/accumulo
 ENV PATH ${PATH}:${ACCUMULO_HOME}/bin
 
-RUN cp ${ACCUMULO_HOME}/conf/examples/2GB/standalone/* ${ACCUMULO_HOME}/conf/
+RUN cp ${ACCUMULO_HOME}/conf/examples/3GB/standalone/* ${ACCUMULO_HOME}/conf/
 COPY accumulo-conf/1.8/masters ${ACCUMULO_HOME}/conf/masters
 COPY accumulo-conf/1.8/accumulo-env.sh ${ACCUMULO_HOME}/conf/accumulo-env.sh
 COPY accumulo-conf/1.8/accumulo-site.xml ${ACCUMULO_HOME}/conf/accumulo-site.xml

@@ -51,7 +51,7 @@
 
   <property>
     <name>tserver.memory.maps.max</name>
-    <value>512M</value>
+    <value>1G</value>
   </property>
 
   <property>
@@ -61,12 +61,12 @@
 
   <property>
     <name>tserver.cache.data.size</name>
-    <value>30M</value>
+    <value>128M</value>
   </property>
 
   <property>
     <name>tserver.cache.index.size</name>
-    <value>80M</value>
+    <value>128M</value>
   </property>
 
   <property>
@@ -119,12 +119,12 @@
 
   <property>
     <name>tserver.sort.buffer.size</name>
-    <value>50M</value>
+    <value>200M</value>
   </property>
 
   <property>
     <name>tserver.walog.max.size</name>
-    <value>512M</value>
+    <value>1G</value>
   </property>
 
   <property>
