@@ -146,7 +146,7 @@ module.exports = function (grunt) {
                 create: {
                   name: "sparkslave",
                   HostConfig: {
-                    Binds: ["/mnt/spark:/tmp"], 
+                    Binds: ["/mnt/spark:/tmp"],
                     NetworkMode: "host"
                   }
                 },
@@ -155,7 +155,7 @@ module.exports = function (grunt) {
               }
             }
           },
-          geoserver:{
+          geoserver: {
             dockerfile: "./images/geoserver",
             tag: "2.9.4",
             repo: "geoserver",
@@ -179,7 +179,7 @@ module.exports = function (grunt) {
               }
             }
           },
-          kafka:{
+          kafka: {
             dockerfile: "./images/kafka",
             tag: "0.11.0",
             repo: "kafka",
@@ -220,6 +220,7 @@ module.exports = function (grunt) {
           securitygroups: ["default", "sparkmasterwebui",
             "sparkmaster", "hadoopwebui", "hadoop", "zookeeper", "accumulo"],
           images: ["sparkmaster", "accumulo_hdfs_master"],
+          volumes : [ "scats-vol" ],
           test: [
             {
               name: "Spark Master WebUI",
@@ -252,19 +253,20 @@ module.exports = function (grunt) {
           securitygroups: ["default", "sparkslavewebui", "sparkslave",
             "hadoopwebui", "hadoop", "zookeeper", "accumulo"],
           images: ["sparkslave", "accumulo_hdfs_slave"],
+          volumes : [ "scats-vol" ],
           test: [
             {
-            name: "Spark Slave WebUI",
-            protocol: "http",
-            port: 8081,
-            path: "/",
-            shouldContain: "Spark Worker at"
+              name: "Spark Slave WebUI",
+              protocol: "http",
+              port: 8081,
+              path: "/",
+              shouldContain: "Spark Worker at"
             },
             {
-              name : "Haddop Slave RPC Jon History Server",
-              protocol : "http",
-              port : 50020,
-              shouldContain : "It looks like you are making an HTTP request to a Hadoop IPC port"
+              name: "Haddop Slave RPC Jon History Server",
+              protocol: "http",
+              port: 50020,
+              shouldContain: "It looks like you are making an HTTP request to a Hadoop IPC port"
             }
           ]
         },
@@ -287,6 +289,15 @@ module.exports = function (grunt) {
           ]
         }
       ], //End nodetypes
+      volumetypes: [{
+        name: "scats-vol",
+        size: 200,
+        description: "Volume for SCATS cluster",
+        volumeType: grunt.sensitiveConfig.pkgcloud.volume_type,
+        availability_zone: grunt.sensitiveConfig.pkgcloud.availability_zone_volume,
+        mountpoint: "/mnt",
+        fstype: "ext4"
+      }],
       securitygroups: {
         "default": {
           description: "Opens the Docker demon and SSH ports to dev and cluster nodes",
@@ -464,44 +475,44 @@ module.exports = function (grunt) {
 
   // Dependent tasks declarations
   require("load-grunt-tasks")(grunt, {
-    config : "./package.json"
+    config: "./package.json"
   });
 
   // Setups and builds the Docker images
-  grunt.registerTask("build", [ "dock:build" ]);
+  grunt.registerTask("build", ["dock:build"]);
 
   // Pushes the Docker images to registry
-  grunt.registerTask("push", [ "dock:push" ]);
+  grunt.registerTask("push", ["dock:push"]);
 
   // Provisions the VMs
-  grunt.registerTask("launch", [ "clouddity:createsecuritygroups", "wait",
+  grunt.registerTask("launch", ["clouddity:createsecuritygroups", "wait",
     "clouddity:createnodes", "wait", "clouddity:updatesecuritygroups",
-    "wait", "clouddity:addhosts" ]);
+    "wait", "clouddity:addhosts"]);
 
   // Pulls the Docker images from registry
-  grunt.registerTask("pull", [ "clouddity:pull" ]);
+  grunt.registerTask("pull", ["clouddity:pull"]);
 
   // Listing cluster components tasks
-  grunt.registerTask("listsecuritygroups", [ "clouddity:listsecuritygroups" ]);
-  grunt.registerTask("listnodes", [ "clouddity:listnodes" ]);
-  grunt.registerTask("listcontainers", [ "clouddity:listcontainers" ]);
+  grunt.registerTask("listsecuritygroups", ["clouddity:listsecuritygroups"]);
+  grunt.registerTask("listnodes", ["clouddity:listnodes"]);
+  grunt.registerTask("listcontainers", ["clouddity:listcontainers"]);
 
   // Docker containers creation
-  grunt.registerTask("create", [ "clouddity:run" ]);
+  grunt.registerTask("create", ["clouddity:run"]);
 
   // Docker containers management
-  grunt.registerTask("stop", [ "clouddity:stop" ]);
-  grunt.registerTask("start", [ "clouddity:start" ]);
+  grunt.registerTask("stop", ["clouddity:stop"]);
+  grunt.registerTask("start", ["clouddity:start"]);
 
   // Tests the deployed containers
-  grunt.registerTask("test", [ "clouddity:test" ]);
+  grunt.registerTask("test", ["clouddity:test"]);
 
   // Docker containers removal
   grunt
-    .registerTask("remove", [ "clouddity:stop", "wait", "clouddity:remove" ]);
+    .registerTask("remove", ["clouddity:stop", "wait", "clouddity:remove"]);
 
   // Destroy the VMs
-  grunt.registerTask("destroy", [ "clouddity:destroynodes", "wait",
-    "clouddity:destroysecuritygroups" ]);
+  grunt.registerTask("destroy", ["clouddity:destroynodes", "wait",
+    "clouddity:destroysecuritygroups"]);
 
 };
