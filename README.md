@@ -1,4 +1,4 @@
-# ScatsCluster
+# SMASHCluster
 
 Grunt tasks to define and deploy the cluster used for SCATS traffic data analysis.
 
@@ -58,7 +58,7 @@ To check the effective start of containers, use:
 
 * Go to `http://<spark master ip>:8088` (the spark master IP can be inferred from the output of the `grunt listnodes` command) and check all the slaves are shown as nodes. 
 * Go to `http://<spark master ip>:50070` and check all the slaves are shown as datanodes
-* SSH into the `scats-1-master` host (the master node, with, say an IP address of `115.146.94.201`), and grab the Hadoop Docker container ID (say, `6be6f25e5dca`):
+* SSH into the `smash-1-master` host (the master node, with, say an IP address of `115.146.94.201`), and grab the Hadoop Docker container ID (say, `6be6f25e5dca`):
 `ssh ubuntu@115.146.94.201`
 `docker ps | grep hadoop`
 * Create an alias to simplify sending commands to HDFS using the [FS shell](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html) : 
@@ -73,7 +73,7 @@ scp ./test/data/VolumeDataSample0.csv ubuntu@115.146.94.201:/tmp
 hdfs "-copyFromLocal /hosttmp/VolumeDataSample0.csv hdfs://115.146.94.201:9000/scats/"
 ```
 (the `/hosttmp` volume is mounted in every container and corresponds to the `/tmp` directory on the host)
-* List the contents of the scats HDFS directory (the file should show up):
+* List the contents of the SMASH HDFS directory (the file should show up):
 `hdfs "-ls hdfs://115.146.94.201:9000/scats"`
 
 
@@ -199,7 +199,7 @@ To see the result of the PI computation:
 
 * If, during the `push` command execution, a 409 HTTP error is raised,
 it may be necessary to clean up your local Docker repository by issuing: `grunt dock:clean`
-* To simplify test and use, you may want to add hostnames and IP addresses as can be inferred from `grunt listnodes --hosts-format` to `/etc/hosts`. After this, you can  use `scats-1-master` instead of, say, `115.146.93.132`
+* To simplify test and use, you may want to add hostnames and IP addresses as can be inferred from `grunt listnodes --hosts-format` to `/etc/hosts`. After this, you can  use `smash-1-master` instead of, say, `115.146.93.132`
 * Some private registry may have self-signed certificates, causing the push and pull operations to return the "509: certificate signed by unknown authority" error message. To solve this you have to add `--insecure-registry <registry hostname>:<registry port (if different from 80)>` to the `DOCKER_OPTS` in `/etc/default/docker` (and restart the Docker service, of course) 
 
 

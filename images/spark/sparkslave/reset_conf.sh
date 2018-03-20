@@ -13,17 +13,18 @@ SPARK_ENV_FILE=${SPARK_HOME}/conf/spark-env.sh
 
 # Master-Daemon settings for Standalone mode
 # Fixme: Hard code hostname
-SPARK_MASTER_HOST="scats-1-master"
+SPARK_MASTER_HOST="smash-1-master"
 SPARK_MASTER_PORT=7077
 SPARK_MASTER_WEBUI_PORT=8080
 
 # Worker-Daemon settings for Standalone mode
 SPARK_WORKER_PORT=7078
 SPARK_WORKER_WEBUI_PORT=8081
-SPARK_WORKER_MEMORY="4G"
+SPARK_WORKER_MEMORY="10G"
+SPARK_WORKER_CORES=3
 SPARK_WORKER_OPTS="\"-Dspark.worker.cleanup.enabled=true \
    -Dspark.worker.cleanup.interval=900 \
-   -Dspark.worker.cleanup.appDataTtl=7200\""
+   -Dspark.worker.cleanup.appDataTtl=21600\""
 
 # History-Daemon settings for Standalone mode
 SPARK_HISTORY_WEBUI_PORT=18080
@@ -45,6 +46,7 @@ echo "SPARK_MASTER_WEBUI_PORT=${SPARK_MASTER_WEBUI_PORT}" >> ${SPARK_ENV_FILE}
 echo "SPARK_WORKER_PORT=${SPARK_WORKER_PORT}" >> ${SPARK_ENV_FILE}
 echo "SPARK_WORKER_WEBUI_PORT=${SPARK_WORKER_WEBUI_PORT}" >> ${SPARK_ENV_FILE}
 echo "SPARK_WORKER_MEMORY=${SPARK_WORKER_MEMORY}" >> ${SPARK_ENV_FILE}
+echo "SPARK_WORKER_CORES=${SPARK_WORKER_CORES}" >> ${SPARK_ENV_FILE}
 echo "SPARK_WORKER_OPTS=${SPARK_WORKER_OPTS}" >> ${SPARK_ENV_FILE}
 echo "SPARK_HISTORY_OPTS=${SPARK_HISTORY_OPTS}" >> ${SPARK_ENV_FILE}
 

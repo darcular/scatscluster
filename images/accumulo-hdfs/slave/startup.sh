@@ -64,7 +64,7 @@ zkServer.sh start
 hadoop-daemon.sh --config ${HADOOP_CONF_DIR} --script hdfs start datanode
 echo "Start waiting for hdfs namenode ready"
 # Fixme hard code
-until hdfs dfsadmin -fs hdfs://scats-1-master:9000/ -safemode wait | grep "Safe mode is OFF"
+until hdfs dfsadmin -fs hdfs://smash-1-master:9000/ -safemode wait | grep "Safe mode is OFF"
 do
     sleep 5s
 done
@@ -77,7 +77,7 @@ sed -i -e "s/localhost:2181/${zookeeper_servers_str}/g" ${ACCUMULO_HOME}/conf/ac
 
 # Wait until accumulo master instance ready
 # Fixme hard code
-until </dev/tcp/scats-1-master/9999
+until </dev/tcp/smash-1-master/9999
 do
   sleep 1s
 done

@@ -210,17 +210,16 @@ module.exports = function (grunt) {
     clouddity: {
       pkgcloud: grunt.sensitiveConfig.pkgcloud,
       docker: grunt.sensitiveConfig.docker,
-      cluster: "scats",
+      cluster: "smash",
       nodetypes: [
         {
           name: "master",
           replication: 1,
-          imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
+          imageRef: "f82012f7-5042-48aa-81c2-a59684840c23",
           flavorRef: "13000ccd-6a24-4bc5-9520-743707f8c0a2",
-          securitygroups: ["default", "sparkmasterwebui",
-            "sparkmaster", "hadoopwebui", "hadoop", "zookeeper", "accumulo"],
+          securitygroups: ["default", "clusterMember"],
           images: ["sparkmaster", "accumulo_hdfs_master"],
-          volumes : [ "scats-vol" ],
+          volumes : [ "smash-vol" ],
           test: [
             {
               name: "Spark Master WebUI",
@@ -247,13 +246,12 @@ module.exports = function (grunt) {
         },
         {
           name: "slave",
-          replication: 13,
-          imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
-          flavorRef: "1",
-          securitygroups: ["default", "sparkslavewebui", "sparkslave",
-            "hadoopwebui", "hadoop", "zookeeper", "accumulo"],
+          replication: 7,
+          imageRef: "f82012f7-5042-48aa-81c2-a59684840c23",
+          flavorRef: "4",
+          securitygroups: ["default", "clusterMember"],
           images: ["sparkslave", "accumulo_hdfs_slave"],
-          volumes : [ "scats-vol" ],
+          volumes : [ "smash-vol" ],
           test: [
             {
               name: "Spark Slave WebUI",
@@ -273,9 +271,9 @@ module.exports = function (grunt) {
         {
           name: "interface",
           replication: 1,
-          imageRef: "73c6f8d8-f885-4253-8bee-e45da068fb65",
-          flavorRef: "885227de-b7ee-42af-a209-2f1ff59bc330",
-          securitygroups: ["default", "geoserver_sec", "accumulo", "zookeeper"],
+          imageRef: "f82012f7-5042-48aa-81c2-a59684840c23",
+          flavorRef: "4",
+          securitygroups: ["default", "clusterMember"],
           images: ["geoserver", "kafka"],
           test: [
             {
@@ -290,9 +288,9 @@ module.exports = function (grunt) {
         }
       ], //End nodetypes
       volumetypes: [{
-        name: "scats-vol",
-        size: 200,
-        description: "Volume for SCATS cluster",
+        name: "smash-vol",
+        size: 280,
+        description: "Volume for SMASH cluster",
         volumeType: grunt.sensitiveConfig.pkgcloud.volume_type,
         availability_zone: grunt.sensitiveConfig.pkgcloud.availability_zone_volume,
         mountpoint: "/mnt",
@@ -308,143 +306,12 @@ module.exports = function (grunt) {
               protocol: "tcp",
               portRangeMin: 22,
               portRangeMax: 22,
-              remoteIpPrefix: grunt.customConfig.devIPs,
-              remoteIpNodePrefixes: ["master", "slave", "interface"]
-            }, {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 2375,
-              portRangeMax: 2375,
-              remoteIpPrefix: grunt.customConfig.devIPs
+              remoteIpPrefix: "0.0.0.0/0",
             }
           ]
         },
-        hadoop: {
-          description: "Opens Hadoop and YARN ports to the cluster and dev machines",
-          rules: [
-            {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 8020,
-              portRangeMax: 9000,
-              // remoteIpNodePrefixes: ["master", "slave"],
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }, {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 50010,
-              portRangeMax: 50105,
-              // remoteIpNodePrefixes: ["master", "slave"],
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }
-          ]
-        },
-        hadoopwebui: {
-          description: "Opens Hadoop admin UIs ports to the cluster and dev machines",
-          rules: [
-            {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 8088,
-              portRangeMax: 8088,
-              remoteIpNodePrefixes: [],
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }, {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 50070,
-              portRangeMax: 51111,
-              remoteIpNodePrefixes: [],
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }
-          ]
-        },
-        sparkmasterwebui: {
-          description: "Opens the master web console ports to dev machines",
-          rules: [
-            {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 4040,
-              portRangeMax: 8080,
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }, {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 18080,
-              portRangeMax: 18080,
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }
-          ]
-        },
-        sparkslavewebui: {
-          description: "Opens the slave web console ports to dev machines",
-          rules: [
-            {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 4040,
-              portRangeMax: 8081,
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }, {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 18080,
-              portRangeMax: 18080,
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }
-          ]
-        },
-        sparkmaster: {
-          description: "Opens Spark ports to dev machines and the cluster",
-          rules: [
-            {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 6066,
-              portRangeMax: 7084,
-              remoteIpNodePrefixes: ["slave"],
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }
-          ]
-        },
-        sparkslave: {
-          description: "Opens the Spark to the cluster and dev machines",
-          rules: [{
-            direction: "ingress",
-            ethertype: "IPv4",
-            protocol: "tcp",
-            portRangeMin: 7078,
-            portRangeMax: 7084,
-            // remoteIpNodePrefixes: ["master", "slave"],
-            remoteIpPrefix: grunt.customConfig.devIPs
-          }]
-        },
-        zookeeper: {
-          description: "Opens Hadoop and YARN ports to the cluster and dev machines",
-          rules: [
-            {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 2181,
-              portRangeMax: 3888,
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }
-          ]
-        },
-        accumulo: {
-          description: "Open Accumulo ports",
+        "clusterMember": {
+          description: "Open ports to each cluster member",
           rules: [
             {
               direction: "ingress",
@@ -455,22 +322,9 @@ module.exports = function (grunt) {
               remoteIpNodePrefixes: ["master", "slave", "interface"]
             }
           ]
-        },
-        geoserver_sec: {
-          description: "Open GeoServer to devIps",
-          rules: [
-            {
-              direction: "ingress",
-              ethertype: "IPv4",
-              protocol: "tcp",
-              portRangeMin: 8080,
-              portRangeMax: 8080,
-              remoteIpPrefix: grunt.customConfig.devIPs
-            }
-          ]
         }
       } //End securitygroups
-    }, // End clouddity
+    } // End clouddity
   });
 
   // Dependent tasks declarations
