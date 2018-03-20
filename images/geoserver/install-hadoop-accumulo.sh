@@ -213,9 +213,14 @@ else
       "${base_url}org/apache/hadoop/hadoop-common/${hadoop_version}/hadoop-common-${hadoop_version}.jar"
       "${base_url}org/apache/hadoop/hadoop-hdfs/${hadoop_version}/hadoop-hdfs-${hadoop_version}.jar"
       "${base_url}commons-logging/commons-logging/${com_log_version}/commons-logging-${com_log_version}.jar"
-      "${base_url}com/google/guava/guava/${guava_version}/guava-${guava_version}.jar"
+#      "${base_url}com/google/guava/guava/${guava_version}/guava-${guava_version}.jar"
       "${base_url}org/apache/commons/commons-vfs2/${commons_vfs2_version}/commons-vfs2-${commons_vfs2_version}.jar"
     )
+
+    # if there's already a guava jar (e.g. geoserver) don't install guava to avoid conflicts
+    if [ -z "$(find $install_dir -maxdepth 1 -name 'guava-*' -print -quit)" ]; then
+        urls+=("${base_url}com/google/guava/guava/${guava_version}/guava-${guava_version}.jar")
+    fi
 
     if [[ -n "${htrace_core_version}" ]]; then
       urls=("${urls[@]}" "${base_url}org/apache/htrace/htrace-core/${htrace_core_version}/htrace-core-${htrace_core_version}.jar")

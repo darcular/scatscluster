@@ -1,8 +1,8 @@
 FROM 115.146.95.30:5000/clusternode:0.3.0
 
-ENV GEOSERVER_VERSION 2.9.4
+ENV GEOSERVER_VERSION 2.12.2
 
-ENV HADOOP_VERSION=2.6.4
+ENV HADOOP_VERSION=2.7.4
 ENV ZOOKEEPER_VERSION=3.4.8
 ENV ACCUMULO_VERSION=1.8.1
 ENV GEOMESA_VERSION=1.3.2
@@ -14,7 +14,7 @@ RUN cd /opt && ln -s ./apache-tomcat-8.0.45 tomcat
 ENV TOMCAT_HOME /opt/tomcat
 
 # Install GeoServer war into GEOSERVER_HOME and remove un-used tmp fils and webapps
-RUN curl -O https://nchc.dl.sourceforge.net/project/geoserver/GeoServer/${GEOSERVER_VERSION}/geoserver-${GEOSERVER_VERSION}-war.zip \
+RUN curl -O http://115.146.95.30/GeoServer/geoserver-${GEOSERVER_VERSION}-war.zip \
     && unzip geoserver-${GEOSERVER_VERSION}-war.zip geoserver.war \
     && mkdir -p ${TOMCAT_HOME}/webapps/geoserver \
     && unzip -q geoserver.war -d ${TOMCAT_HOME}/webapps/geoserver \
@@ -62,6 +62,7 @@ RUN curl -O https://excellmedia.dl.sourceforge.net/project/geoserver/GeoServer/$
     && unzip -n geoserver-${GEOSERVER_VERSION}-importer-plugin.zip -d ${GEOSERVER_PLUGIN_LIB} \
     && rm geoserver-${GEOSERVER_VERSION}-importer-plugin.zip
 
+#=========== Discard ==========
 ## Install GeoMesa-Web-Data
 #RUN curl -s http://115.146.95.30/geomesa-${GEOMESA_VERSION}/dist/webservices/geomesa-web-data_2.11-${GEOMESA_VERSION}-install.tar.gz \
 #    | tar -xz -C ${GEOSERVER_PLUGIN_LIB}
