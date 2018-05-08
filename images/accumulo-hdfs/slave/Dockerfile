@@ -43,6 +43,7 @@ RUN cp ${ACCUMULO_HOME}/conf/examples/3GB/standalone/* ${ACCUMULO_HOME}/conf/
 COPY accumulo-conf/1.8/masters ${ACCUMULO_HOME}/conf/masters
 COPY accumulo-conf/1.8/accumulo-env.sh ${ACCUMULO_HOME}/conf/accumulo-env.sh
 COPY accumulo-conf/1.8/accumulo-site.xml ${ACCUMULO_HOME}/conf/accumulo-site.xml
+COPY accumulo-conf/1.8/generic_logger.xml ${ACCUMULO_HOME}/conf/generic_logger.xml
 
 #
 # ================== Install GeoMesa Distributed Runtime =================

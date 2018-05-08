@@ -28,6 +28,8 @@ SPARK_WORKER_OPTS="\"-Dspark.worker.cleanup.enabled=true \
    -Dspark.worker.cleanup.interval=900 \
    -Dspark.worker.cleanup.appDataTtl=21600\""
 
+# 6*60*60=21600 (6 hour)  15*60=900 (15 minutes)
+
 # History-Daemon settings for Standalone mode
 SPARK_HISTORY_WEBUI_PORT=18080
 SPARK_HISTORY_OPTS="\"-Dspark.history.ui.port=${SPARK_HISTORY_WEBUI_PORT} \

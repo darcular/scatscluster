@@ -51,7 +51,7 @@
 
   <property>
     <name>tserver.memory.maps.max</name>
-    <value>1G</value>
+    <value>2G</value>
   </property>
 
   <property>
@@ -60,13 +60,20 @@
   </property>
 
   <property>
+    <name>table.cache.block.enable</name>
+    <value>true</value>
+  </property>
+
+  <property>
     <name>tserver.cache.data.size</name>
-    <value>128M</value>
+    <value>1G</value>
+    <!--128M-->
   </property>
 
   <property>
     <name>tserver.cache.index.size</name>
-    <value>128M</value>
+    <value>1G</value>
+    <!--128M-->
   </property>
 
   <property>
