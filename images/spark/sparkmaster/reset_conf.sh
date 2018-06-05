@@ -25,8 +25,8 @@ SPARK_WORKER_WEBUI_PORT=8081
 SPARK_WORKER_MEMORY="10G"
 SPARK_WORKER_CORES=3
 SPARK_WORKER_OPTS="\"-Dspark.worker.cleanup.enabled=true \
-   -Dspark.worker.cleanup.interval=900 \
-   -Dspark.worker.cleanup.appDataTtl=21600\""
+   -Dspark.worker.cleanup.interval=1800 \
+   -Dspark.worker.cleanup.appDataTtl=43200\""
 
 # 6*60*60=21600 (6 hour)  15*60=900 (15 minutes)
 
