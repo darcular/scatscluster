@@ -29,6 +29,12 @@ RUN chmod a+x ${SPARK_HOME}/sbin/*.sh
 
 COPY extraJars ${SPARK_HOME}/jars
 
+## =================== Setup cron =================================
+ADD crontab /etc/cron.d/mycron
+ADD cleanSparkDir.sh /root
+RUN chmod +x /root/*.sh
+RUN chmod 0644 /etc/cron.d/mycron
+
 ENTRYPOINT ["/usr/local/spark/sbin/startup.sh"]
 
 EXPOSE 22 4040 7078 8081 18080 7079 7080 7081 7082 7083
