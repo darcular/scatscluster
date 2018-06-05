@@ -1,14 +1,14 @@
 FROM 115.146.95.30:5000/clusternode:0.3.0
 
-ENV HADOOP_VERSION=2.7.4
+ENV HADOOP_VERSION=2.7.6
 ENV ACCUMULO_VERSION=1.8.1
-ENV GEOMESA_VERSION=1.3.2
+ENV GEOMESA_VERSION=2.0.1
 
 #
 # ================== Install Hadoop =================
 #
 
-# Download hadoop-2.6.4 and place to /opt/hadoop
+# Download hadoop-2.7.6 and place to /opt/hadoop
 RUN curl -s http://apache.mirror.serversaustralia.com.au/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz \
     | tar -xz -C /opt
 RUN cd /opt && ln -s ./hadoop-${HADOOP_VERSION} hadoop

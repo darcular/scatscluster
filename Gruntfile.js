@@ -61,12 +61,12 @@ module.exports = function (grunt) {
           },
           accumulo_hdfs_master: {
             dockerfile: "./images/accumulo-hdfs/master",
-            tag: "0.1.0",
+            tag: "0.2.0",
             repo: "accumulo_hdfs_master",
             options: {
               build: {
                 t: grunt.sensitiveConfig.docker.registry.serveraddress
-                + "/accumulo_hdfs_master:" + "0.1.0",
+                + "/accumulo_hdfs_master:" + "0.2.0",
                 pull: false,
                 nocache: false
               },
@@ -85,12 +85,12 @@ module.exports = function (grunt) {
           },
           accumulo_hdfs_slave: {
             dockerfile: "./images/accumulo-hdfs/slave",
-            tag: "0.1.0",
+            tag: "0.2.0",
             repo: "accumulo_hdfs_slave",
             options: {
               build: {
                 t: grunt.sensitiveConfig.docker.registry.serveraddress
-                + "/accumulo_hdfs_slave:" + "0.1.0",
+                + "/accumulo_hdfs_slave:" + "0.2.0",
                 pull: false,
                 nocache: false
               },
@@ -157,12 +157,12 @@ module.exports = function (grunt) {
           },
           geoserver: {
             dockerfile: "./images/geoserver",
-            tag: "2.9.4",
+            tag: "2.12.2",
             repo: "geoserver",
             options: {
               build: {
                 t: grunt.sensitiveConfig.docker.registry.serveraddress
-                + "/geoserver:" + "2.9.4",
+                + "/geoserver:" + "2.12.2",
                 pull: false,
                 nocache: false
               },

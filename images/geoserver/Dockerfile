@@ -5,7 +5,7 @@ ENV GEOSERVER_VERSION 2.12.2
 ENV HADOOP_VERSION=2.7.4
 ENV ZOOKEEPER_VERSION=3.4.8
 ENV ACCUMULO_VERSION=1.8.1
-ENV GEOMESA_VERSION=1.3.2
+ENV GEOMESA_VERSION=2.0.1
 
 # Install Tomcat 8
 RUN curl -s http://115.146.95.30/tomcat-8/apache-tomcat-8.0.45.tar.gz \
@@ -27,12 +27,12 @@ RUN curl -O http://115.146.95.30/GeoServer/geoserver-${GEOSERVER_VERSION}-war.zi
     && rm -r ${TOMCAT_HOME}/webapps/host-manager
 
 # Install JAI and ImageIO for GeoServer
-RUN curl -s http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz \
+RUN curl -s https://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz \
     | tar -xz -C /opt \
     && cp /opt/jai-1_1_3/lib/*.jar ${JAVA_HOME}/jre/lib/ext/ \
     && cp /opt/jai-1_1_3/lib/*.so ${JAVA_HOME}/jre/lib/amd64/ \
     && rm -r /opt/jai-1_1_3
-RUN curl http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-amd64.tar.gz \
+RUN curl https://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-amd64.tar.gz \
     | tar -xz -C /opt \
     && cp /opt/jai_imageio-1_1/lib/*.jar  ${JAVA_HOME}/jre/lib/ext/ \
     && cp /opt/jai_imageio-1_1/lib/*.so ${JAVA_HOME}/jre/lib/amd64/ \
@@ -58,7 +58,7 @@ RUN curl -O https://excellmedia.dl.sourceforge.net/project/geoserver/GeoServer/$
     && rm geoserver-${GEOSERVER_VERSION}-wps-plugin.zip
 
 ## Install importer extension
-RUN curl -O https://excellmedia.dl.sourceforge.net/project/geoserver/GeoServer/${GEOSERVER_VERSION}/extensions/geoserver-${GEOSERVER_VERSION}-importer-plugin.zip \
+RUN curl -O https://jaist.dl.sourceforge.net/project/geoserver/GeoServer/${GEOSERVER_VERSION}/extensions/geoserver-${GEOSERVER_VERSION}-importer-plugin.zip \
     && unzip -n geoserver-${GEOSERVER_VERSION}-importer-plugin.zip -d ${GEOSERVER_PLUGIN_LIB} \
     && rm geoserver-${GEOSERVER_VERSION}-importer-plugin.zip
 
