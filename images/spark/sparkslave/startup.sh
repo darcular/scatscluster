@@ -16,5 +16,8 @@ trap "term_handler" HUP INT QUIT TERM
 ${SPARK_HOME}/sbin/start-slave.sh spark://${SPARK_MASTER_HOST}:${SPARK_MASTER_PORT}
 ${SPARK_HOME}/sbin/start-history-server.sh &
 
+# start cronb
+cron
+
 # Keep process alive
 tail -f /dev/null & wait ${!}
