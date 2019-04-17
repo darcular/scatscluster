@@ -11,8 +11,8 @@
     "node": ">= 0.10.0"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-wait": "^0.1.0",
+    "grunt": "0.4.5",
+    "grunt-wait": "0.1.0",
     "load-grunt-tasks": "~3.3.0",
     "grunt-dock": "git+https://github.com/lmoran/grunt-dock.git#master",
     "grunt-clouddity": "git+https://github.com/project-rhd/grunt-clouddity.git#dev"
